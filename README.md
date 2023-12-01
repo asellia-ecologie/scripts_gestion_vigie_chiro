@@ -1,4 +1,4 @@
-# READ ME
+# Asellia’s chiro sound workflow 
 
 ## Gestion_sons.Rmd (and its derivatives)
 
