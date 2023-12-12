@@ -2,3 +2,5 @@ id_bdd.py
 cred.R
 03_participations.Rmd
 02_find_points_orig.R
+.Rproj.user
+*.Rproj

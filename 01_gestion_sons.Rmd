@@ -42,6 +42,7 @@ Préparation des dossiers :
 # Le dossier de travail et celui ou se trouve le script python
 os.chdir('/home/asellia_pc_chiro/Bureau/GESTION_SONS/01_SONS_A_TRAITER')
 # os.chdir('/media/asellia_pc_chiro/T_01/02_SONS_A_TRAITER')
+#os.dir ('')
 
 # Modifier rootdir si a_classer, a_nommer, a_convertir et a_compresser ne sont
 # pas au même endroit que le script
