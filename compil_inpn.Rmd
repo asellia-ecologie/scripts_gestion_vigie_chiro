@@ -43,6 +43,8 @@ sons <- rbind(sons, sons_a_faire)
 # Si on veut enregistrer la compil dans un gros csv :
 write.csv2(sons, paste0("compils_tadarida_", date, ".csv"))
 
+sons_asellia <- read.csv2("compils_tadarida_2023-11-10.csv")
+
 # Ne garder que les lignes analysées :
 sons_asellia <- sons %>% filter(!is.na(observateur_taxon))
 
