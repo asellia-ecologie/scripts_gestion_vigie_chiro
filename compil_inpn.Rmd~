@@ -47,7 +47,6 @@ sons_asellia <- read.csv2("compils_tadarida_2023-11-10.csv")
 
 # Ne garder que les lignes analysées :
 sons_asellia <- sons %>% filter(!is.na(observateur_taxon))
-sons_asellia <- sons_asellia %>% filter(!is.na(observateur_taxon))
 
 rm(sons)
 # Ne prendre que les sons supérieurs à 0.5 de proba :
