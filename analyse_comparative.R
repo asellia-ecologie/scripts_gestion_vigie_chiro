@@ -143,6 +143,10 @@ sons_asellia <- sons_asellia %>% filter(nom_point != "20230401")
 # sons_asellia %>% filter(nom_point %like% 'Mong%')
 
 sons_asellia$lieu_dit <- str_split_i(sons_asellia$Nom, "_", 3)
+unique(sons_asellia$lieu_dit)
+
+# Enlever les sons SW5 sans préfixe
+sons_asellia <- sons_asellia %>% filter(!str_like(Nom, "SW5%"))
 
 sons_asellia$boitier <- str_split_i(
   str_split_i(
@@ -150,9 +154,17 @@ sons_asellia$boitier <- str_split_i(
   ), "-", -1
 )
 
+# test :
+
+sons_asellia$boitier <- str_split_i(
+  sons_asellia$Nom, "_", -4
+)
+
+sons_asellia %>% filter(boitier == "PlanMilieu")
 unique(sons_asellia$boitier)
+
 sons_asellia %>% filter(boitier == "Car040863")
-sons_asellia %>% filter(boitier == "Cam3")
+sons_asellia %>% filter(boitier == "StJou01")
 
 sons_asellia$date_heure <- ymd_hms(
   paste(
