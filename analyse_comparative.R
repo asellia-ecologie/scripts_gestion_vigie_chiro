@@ -17,6 +17,7 @@ library(sjmisc)
 dossier <- "/home/bbk9/kDrive/Shared/BDD/SONS"
 setwd(dossier)
 
+espece <- "Barbar"
 
 # indication du dossier où trouver les sons a traiter
 d <- "ANALYSES/csv"
@@ -281,7 +282,28 @@ data_inpn$y_wgs84 <- st_coordinates(data_inpn)[, 2]
 
 data_inpn <- data_inpn %>% filter(!is.na(x_wgs84))
 
-write.csv2(data_inpn, "export_inpn.csv")
+placettes_inpn <- data_inpn
+placettes_inpn <- placettes_inpn[c("nom_point", "date_nuit", "geom", "x_wgs84", "y_wgs84")]
+placettes_inpn <- unique(placettes_inpn)
+data_espece <- data_inpn %>% filter(observateur_taxon == espece)
+data_espece <- as.data.frame(data_espece)
+
+
+placettes_espece <- placettes_inpn %>% left_join(data_espece, by = c("nom_point", "date_nuit"))
+
+placettes_espece <- placettes_espece[c(
+  "nom_point", "date_nuit", "x_wgs84.x", "y_wgs84.x",
+  "observateur_taxon", "obs1", "type_habitat", "nombre"
+)]
+
+placettes_espece <- placettes_espece %>% rename(x_wgs84 = x_wgs84.x, y_wgs84 = y_wgs84.x, geom = geom.x)
+
+placettes$nombre_de_nuits[is.na(placettes$nombre_de_nuits)] <- 1
+placettes_espece$nombre[is.na(placettes_espece$nombre)] <- 0
+placettes_espece$observateur_taxon[is.na(placettes_espece$observateur_taxon)] <- "Barbar"
+write.csv2(placettes_espece, paste0("data_", espece, "_vigie.csv"))
+
+write.csv2(data_inpn, "export_inpn_vigie.csv")
 plot(data_loc)
 class(data_inpn)
 # placettes %>% filter(nom_point == "Maza36")
