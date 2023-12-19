@@ -154,17 +154,11 @@ sons_asellia$boitier <- str_split_i(
   ), "-", -1
 )
 
-# test :
-
-sons_asellia$boitier <- str_split_i(
-  sons_asellia$Nom, "_", -4
-)
-
-sons_asellia %>% filter(boitier == "PlanMilieu")
 unique(sons_asellia$boitier)
 
-sons_asellia %>% filter(boitier == "Car040863")
+# Cas particulier à corriger :
 sons_asellia %>% filter(boitier == "StJou01")
+sons_asellia %>% filter(boitier == "StJou02")
 
 sons_asellia$date_heure <- ymd_hms(
   paste(
@@ -173,8 +167,7 @@ sons_asellia$date_heure <- ymd_hms(
   )
 )
 # unique(sons_asellia$nom_point)
-unique(sons_asellia$lieu_dit)
-unique(sons_asellia$date_heure)
+# unique(sons_asellia$date_heure)
 
 sons_asellia %>% filter(is.na(date_heure))
 sons_asellia <- sons_asellia %>% filter(!is.na(date_heure))
@@ -231,7 +224,7 @@ tryCatch(
 
 # Requete pour récupérer la bdd_placettes_2023 en entier :
 query_totale <- paste(
-  "select geom, nombre_de_nuits,date, nom_point, obs1,
+  "select geom, nb_nuit_script ,date, nom_point, obs1,
                       \"lieu-dit\", type_habitat",
   "from bd_sons.bdd_placettes_2023"
 )
@@ -242,6 +235,7 @@ placettes <- st_read(connec,
 )
 
 # Pour gérer l’intervale dans la jointure :
+placettes <- placettes %>% rename(nombre_de_nuits = nb_nuit_script)
 sons_asellia$date_nuit <- as.Date(sons_asellia$date_nuit)
 placettes$nombre_de_nuits <- as.integer(placettes$nombre_de_nuits)
 
@@ -252,10 +246,10 @@ placettes$nombre_de_nuits[is.na(placettes$nombre_de_nuits)] <- 1
 placettes$date_max <- placettes$date + days(placettes$nombre_de_nuits - 1)
 
 # création de la jointure entre le nom_point et l’intervale de date :
-by <- join_by(
-  nom_point,
-  between(x$date_nuit, y$date, y$date_max)
-)
+# by <- join_by(
+# nom_point,
+# between(x$date_nuit, y$date, y$date_max)
+# )
 by2 <- join_by(nom_point, x$lieu_dit == y$"lieu-dit")
 
 # Nettoyage (à éviter) si des date_nuit manquent la jointure sera impossible :
@@ -263,17 +257,16 @@ sons_asellia <- sons_asellia %>% filter(!is.na(date_nuit))
 
 sons_asellia <- unique(sons_asellia)
 # jointure entre les sons et la bdd placettes
+
 data_loc <- left_join(sons_asellia, placettes,
   by2,
   multiple = "first"
 )
 
-perdus <- data_loc %>% filter(is.na(id))
-unique(perdus$nom_point)
-perdus %>% group_by(nom_point, date_nuit)
-unique(paste(perdus$nom_point, perdus$date_nuit))
+
 class(data_loc)
 data_loc <- st_as_sf(data_loc)
+
 data_inpn <- data_loc %>%
   group_by(
     nom_point, date_nuit, observateur_taxon,
@@ -283,8 +276,11 @@ data_inpn <- data_loc %>%
 
 data_inpn <- st_as_sf(data_inpn)
 data_inpn <- data_inpn %>% st_cast("POINT")
-data_inpn$x_wgs84 <- st_coordinates(test)[, 1]
-data_inpn$y_wgs84 <- st_coordinates(test)[, 2]
+data_inpn$x_wgs84 <- st_coordinates(data_inpn)[, 1]
+data_inpn$y_wgs84 <- st_coordinates(data_inpn)[, 2]
+
+data_inpn <- data_inpn %>% filter(!is.na(x_wgs84))
+
 write.csv2(data_inpn, "export_inpn.csv")
 plot(data_loc)
 class(data_inpn)
