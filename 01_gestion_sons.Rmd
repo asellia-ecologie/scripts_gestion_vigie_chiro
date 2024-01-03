@@ -19,7 +19,7 @@ from pathlib import Path # accès aux dossiers
 import psycopg2 as pg # accès à la base de données
 import time # gestion formats date/heure
 import datetime
-from id_bdd import USER, PASSWORD, HOST, PORT, DB_NAME # imports param conn.
+from id_bdd import USER, PASSWORD, HOST, PORT, DB_NAME, HOM # imports param conn.
 # Contenu de idd_bdd.py à la racine du dossier :
     # DB_NAME = 'nom_bdd'
     # USER = 'nom_utilisateur'
@@ -40,7 +40,7 @@ Préparation des dossiers :
 
 ```{python}
 # Le dossier de travail et celui ou se trouve le script python
-os.chdir('/home/asellia_pc_chiro/Bureau/GESTION_SONS/01_SONS_A_TRAITER')
+os.chdir(HOME)
 # os.chdir('/media/asellia_pc_chiro/T_01/02_SONS_A_TRAITER')
 #os.dir ('')
 
