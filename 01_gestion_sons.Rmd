@@ -34,7 +34,7 @@ import numpy as np # Tableaux de données pour fonctions bdd
 import subprocess # pour appeler des scripts externes (shell)
 from fonctions_asellia import get_placette_count, get_ligne, updateVigie, 
 updatePoint, updateVigieId, updateParticipationId, get_prefix, get_placette,
-getSiteParti
+getSiteParti, nettoyageDossier
 
 ```
 
@@ -62,12 +62,6 @@ a_convertir = os.path.join(rootdir, '03_a_convertir')
 a_compresser = os.path.join(rootdir, '04_a_compresser')
 a_envoyer = os.path.join(rootdir, '05_a_envoyer')
 stock = os.path.join(rootdir, 'stock')
-def nettoyageDossier(dossier):
-    for subdir, dirs, files in os.walk(dossier):
-        if len(dirs) == 0 and len(files) == 0 and subdir != dossier:
-            os.rmdir(subdir)
-            print(subdir)
-
 ```
 
 ### Évaluation des fichiers .wav et renommage si Passive Recorder
