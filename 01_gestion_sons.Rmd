@@ -32,6 +32,10 @@ import csv # Pour le format csv
 import shutil as su # Autre outil de gestion des fichiers
 import numpy as np # Tableaux de données pour fonctions bdd
 import subprocess # pour appeler des scripts externes (shell)
+from fonctions_asellia import get_placette_count, get_ligne, updateVigie, 
+updatePoint, updateVigieId, updateParticipationId, get_prefix, get_placette,
+getSiteParti
+
 ```
 
 # Petite boite à outils pour le traitement des fichiers sons vigie-chiro
@@ -212,15 +216,6 @@ for subdir, dirs, files in os.walk(a_nommer):
 
 ### Vérification des nuits/boitier avant codage vigie-chiro
 ```{python}
-# Fonction pour faire la correspondance entre les boitiers et les nuits dans la bdd placettes :
-def get_placette_count(cursor, boitier, date):
-    query = '''SELECT count(distinct(id)) FROM bd_sons.bdd_placettes_2023 WHERE num_sm2 = %s
-    and %s::date - "date" between 0 and (nombre_de_nuits - 1);'''
-    cursor.execute(query, [boitier, date])
-    results = cursor.fetchone()
-    return results[0] if results else ''
-
-
 # Mise à jour du tableau avec le nombre de nuits par boitier (1 si ok):
 with contextlib.ExitStack() as ctx:
     connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
@@ -250,32 +245,6 @@ with open(f'{a_nommer}/a_coder{now}.csv', 'w', newline= '') as file:
     writer = csv.writer(file)
     fields =  ["FirstName","FamilyName","Email","Affiliation","Country","Site","X","Y","Participation","StartDate","EndDate", "TypeStudy", "MicHeight", "Recorder", "Mic", "GainRecorder", "HPF", "FreqMin", "FreqMax", "TriggerLevel", "MinDur", "MaxDur", "TrigWin", "Pause", "TrigWinMax", "FileSplittingLength", "NoiseFilter", "Comment"]
     writer.writerow(fields)
-# Fonction pour faire la correspondance entre les boitiers et les nuits dans la bdd placettes :
-def get_ligne(cursor, boitier, date):
-    query = """select split_part(obs1, ' ',2) as FirstName, split_part(obs1, ' ',1) as FamilyName,
-        'asellia.ecologie@gmail.com' as Email, 'Asellia Écologie' as Affiliation,
-        'France' as Country, nom_point as Site, st_x(geom) as X, st_y(geom) as Y,
-        'Pass'||passage as Participation, to_char("date",'DD/MM/YYYY')  as StartDate, 
-        to_char("date" + interval '1 day' * nombre_de_nuits, 'DD/MM/YYYY') as EndDate, 
-        1 as TypeStudy, hauteur_micro as MicHeight,
-        case
-        when num_sm2 in ('SM1', 'SM2', 'SM3', 'SM4') then 18
-        when num_sm2 like 'SM%%' then 20
-        when num_sm2 = 'SW5' then 2
-        else 14
-        end as Recorder,
-        'NA' as Mic, 999 as GainRecorder, 0 as HPF, 2 as FreqMin,
-        999 as FreqMax, 12 as TriggerLevel, 999 as MinDur, 999 as MaxDur,
-        2 as TrigWin, 0 as Pause, 600 as TrigWinMax, 5 as FileSplittingLength,
-        'no' as NoiseFilter, '' as Comment
-    from bd_sons.bdd_placettes_2023 t1
-    where num_sm2 = %s
-    and %s::date - "date" between 0 and (nombre_de_nuits - 1);"""
-    cursor.execute(query, [boitier, date])
-    results = cursor.fetchone()
-    print(results)
-    return results if results else ''
-
 
 # Mise à jour du tableau avec le nombre de nuits par boitier (1 si ok):
 with contextlib.ExitStack() as ctx:
@@ -312,23 +281,6 @@ Puis Participations.Rmd
 ### Mise a jour du point vigie chiro dans la bdd placettes
 
 ```{python}
-def updateVigie(cursor, site, carre):
-    sqlUpdateCarre = f''' update bd_sons.bdd_placettes_2023
-    set vigie_chiro = %s
-    where nom_point = %s
-    and vigie_chiro is null;
-    '''
-
-    cursor.execute(sqlUpdateCarre, [carre, site])
-
-def updatePoint(cursor, site, point):
-    sqlUpdatePoint = f''' update bd_sons.bdd_placettes_2023
-    set code_point = %s
-    where nom_point = %s;
-    '''
-    cursor.execute(sqlUpdatePoint, [point, site])
-
-
 newPoints = pd.read_csv(f'{a_nommer}/NewPoints_ok.csv', sep = ";", dtype = {'Carre' : str})
 oldPoints = pd.read_csv(f'{a_nommer}/OldPoints_ok.csv', sep = ";", dtype = {'titre' : str})
 
@@ -371,31 +323,6 @@ Puis mise à jour des Participations :
 # Mettre ici le nom du csv a_coder_..._created.csv
 participations = pd.read_csv(f'{a_nommer}/a_coder20231129_122413_ok_created.csv', sep = ";")
 
-def updateVigieId(cursor, id_site, site, date):
-    date_split = date.split(os.sep)
-    date = date_split[2] + '-' + date_split[1] + '-' + date_split[0]
-    print(date)
-    print(id_site)
-    print(site)
-    sqlUpdateVigieId = f''' update bd_sons.bdd_placettes_2023
-    set site_vigie = %s
-    where nom_point = %s
-    and "date" = %s;
-    '''
-    cursor.execute(sqlUpdateVigieId, [id_site, site,date])
-
-def updateParticipationId(cursor, participation, site, date):
-    date_split = date.split(os.sep)
-    date = date_split[2] + '-' + date_split[1] + '-' + date_split[0]
-    sqlUpdateParticipation = f''' update bd_sons.bdd_placettes_2023
-    set participation_vigie = %s
-    where nom_point = %s
-    and "date" = %s and participation_vigie is null;
-    '''
-    cursor.execute(sqlUpdateParticipation, [participation, site, date])
-
-
-
 with contextlib.ExitStack() as ctx:
     connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
     cursor = ctx.enter_context(connection.cursor())
@@ -416,14 +343,6 @@ r.beep(sound = 1)
 ### Renommage (à adapter à la requête sql)
 
 ```{python}
-def get_prefix(cursor, boitier, date):
-    query = """select code_total
-        from bd_sons.bdd_placettes_2023 t1
-        where num_sm2 = %s
-        and %s::date - "date" between 0 and (nombre_de_nuits - 1);"""
-    cursor.execute(query, [boitier, date])
-    results = cursor.fetchone()
-    return results[0] if results else ''
 # On parcourt le dossier 'a_nommer'
 for subdir, dirs, files in os.walk(a_nommer):
 
@@ -639,15 +558,6 @@ Plus utile sauf en cas de doute sur tadam.py, mais a tjs fonctionné jusque-là.
 ### Rangement dans a_compresser
 
 ```{python}
-def get_placette(cursor, boitier, date):
-    query = """select etude, "lieu-dit", nom_point, passage
-        from bd_sons.bdd_placettes_2023 t1
-        where num_sm2 = %s
-        and %s - to_char("date", \'YYYYMMdd\')::integer between 0 and (nombre_de_nuits - 1);"""
-    cursor.execute(query, [boitier, date])
-    results = cursor.fetchone()
-    return results if results else ''
-
 for subdir, dirs, files in os.walk(a_convertir):
     if subdir.split(os.sep)[-1] ==  'WAC':
         boitier = subdir.split(os.sep)[-3]
@@ -732,15 +642,6 @@ for subdir, dirs, files in os.walk(a_compresser):
 ### Préparation des fichiers tar pour envoi
 
 ```{python}
-def getSiteParti(cursor, placette, date):
-    query = """select site_vigie, participation_vigie
-        from bd_sons.bdd_placettes_2023 t1
-        where nom_point = %s
-        and %s::date - "date" between 0 and (nombre_de_nuits);"""
-    cursor.execute(query, [placette, date])
-    results = cursor.fetchone()
-    return results if results else ''
-
 path_tar = os.path.join(a_envoyer, 'tar')
 exists_tar = os.path.exists(path_tar)
 

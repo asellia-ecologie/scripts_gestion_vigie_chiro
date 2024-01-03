@@ -200,6 +200,10 @@ def updateVigie(cursor, site, carre):
     Parameters
     --------
     cursor : contextlib connection.cursor
+    site : str
+        nom_point in our database, unique site name
+    carre : str
+        Vigie Chiro Carré 6 digit code as given when the site is created
     """
     sqlUpdateCarre = ''' update bd_sons.bdd_placettes_2023
     set vigie_chiro = %s
@@ -237,7 +241,7 @@ def updateVigieId(cursor, id_site, site, date):
     site : str
         nom_point base de données placettes
     date : str
-        date au format "13/01/2023
+        date au format "13/01/2023"
 
     Returns
     --------
@@ -364,7 +368,6 @@ def get_placette_old(cursor, placette, date):
     return results if results else ''
 
 
-
 def getSiteParti(cursor, boitier, date):
     """
     Parameters
@@ -400,4 +403,3 @@ def sevenzip(filename, zipname):
     """
     system = subprocess.Popen(["7z", "-v700m", "a", zipname, filename])
     return system.communicate()
-
