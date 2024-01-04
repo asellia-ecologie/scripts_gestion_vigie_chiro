@@ -6,9 +6,10 @@
 # Pour utiliser Python :
 library(reticulate)
 library(beepr)
+source("variables_perso.R")
 # Renseigner Python selon l’env anaconda choisi :
-use_python("/home/asellia_pc_chiro/miniconda3/envs/Gestion_Sons/bin/python")
-setwd("/home/asellia_pc_chiro/Bureau/GESTION_SONS/")
+use_python(python)
+setwd(dossier)
 ```
 ## Appel des bibliothèques nécessaires
 
