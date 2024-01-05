@@ -26,7 +26,7 @@ def updateStatus(cursor, colonne, site, date):
     """
     date_split = date.split('/')
     date = date_split[2] + '-' + date_split[1] + '-' + date_split[0]
-    sqlUpdateStatus = sql.SQL(''' update bd_sons.bdd_placettes_2023
+    sqlUpdateStatus = sql.SQL(''' update bd_sons.bdd_placettes
     set {} = 'ok'
     where nom_point = %s
     and "date" = %s;
@@ -52,7 +52,7 @@ def get_placette_count(cursor, boitier, date):
     results : int
         nombre de placettes correspondantes dans la bdd_placettes asellia
     """
-    query = '''SELECT count(distinct(id)) FROM bd_sons.bdd_placettes_2023
+    query = '''SELECT count(distinct(id)) FROM bd_sons.bdd_placettes
     WHERE num_sm2 = %s
     and %s::date - "date" between 0 and (nb_nuit_script - 1);'''
     cursor.execute(query, [boitier, date])
@@ -78,7 +78,7 @@ def get_nuit_count(cursor, placette, date):
     results : int
         nombre de placettes correspondantes dans la bdd_placettes asellia
     """
-    query = '''SELECT count(distinct(id)) FROM bd_sons.bdd_placettes_2023
+    query = '''SELECT count(distinct(id)) FROM bd_sons.bdd_placettes
     WHERE nom_point = %s
     and %s::date - "date" between 0 and (nb_nuit_script - 1);'''
     cursor.execute(query, [placette, date])
@@ -141,7 +141,7 @@ def get_ligne(cursor, boitier, date):
         999 as FreqMax, 12 as TriggerLevel, 999 as MinDur, 999 as MaxDur,
         2 as TrigWin, 0 as Pause, 600 as TrigWinMax, 5 as FileSplittingLength,
         'no' as NoiseFilter, '' as Comment
-    from bd_sons.bdd_placettes_2023 t1
+    from bd_sons.bdd_placettes t1
     where num_sm2 = %s
     and %s::date - "date" between 0 and (nb_nuit_script - 1);"""
     cursor.execute(query, [boitier, date])
@@ -205,7 +205,7 @@ def updateVigie(cursor, site, carre):
     carre : str
         Vigie Chiro Carré 6 digit code as given when the site is created
     """
-    sqlUpdateCarre = ''' update bd_sons.bdd_placettes_2023
+    sqlUpdateCarre = ''' update bd_sons.bdd_placettes
     set vigie_chiro = %s
     where nom_point = %s
     and vigie_chiro is null;
@@ -221,7 +221,7 @@ def updatePoint(cursor, site, point):
     --------
     cursor : contextlib connection.cursor
     """
-    sqlUpdatePoint = ''' update bd_sons.bdd_placettes_2023
+    sqlUpdatePoint = ''' update bd_sons.bdd_placettes
     set code_point = %s
     where nom_point = %s;
     '''
@@ -252,7 +252,7 @@ def updateVigieId(cursor, id_site, site, date):
     print(date)
     print(id_site)
     print(site)
-    sqlUpdateVigieId = ''' update bd_sons.bdd_placettes_2023
+    sqlUpdateVigieId = ''' update bd_sons.bdd_placettes
     set site_vigie = %s
     where nom_point = %s
     and "date" = %s;
@@ -268,7 +268,7 @@ def updateParticipationId(cursor, participation, site, date):
     """
     date_split = date.split('/')
     date = date_split[2] + '-' + date_split[1] + '-' + date_split[0]
-    sqlUpdateParticipation = ''' update bd_sons.bdd_placettes_2023
+    sqlUpdateParticipation = ''' update bd_sons.bdd_placettes
     set participation_vigie = %s
     where nom_point = %s
     and "date" = %s and participation_vigie is null;
@@ -292,7 +292,7 @@ def get_prefix(cursor, boitier, date):
     results[0] : str
     """
     query = """select code_total
-        from bd_sons.bdd_placettes_2023 t1
+        from bd_sons.bdd_placettes t1
         where num_sm2 = %s
         and %s::date - "date" between 0 and (nb_nuit_script - 1);"""
     cursor.execute(query, [boitier, date])
@@ -316,7 +316,7 @@ def get_prefix_placette(cursor, placette, date):
     results[0] : str
     """
     query = """select code_total
-        from bd_sons.bdd_placettes_2023 t1
+        from bd_sons.bdd_placettes t1
         where nom_point = %s
         and %s::date - "date" between 0 and (nb_nuit_script - 1);"""
     cursor.execute(query, [placette, date])
@@ -338,7 +338,7 @@ def get_placette(cursor, boitier, date):
     """
 
     query = """select etude, "lieu-dit", nom_point, passage
-        from bd_sons.bdd_placettes_2023 t1
+        from bd_sons.bdd_placettes t1
         where num_sm2 = %s
         and %s - to_char("date", \'YYYYMMdd\')::integer between 0 and (nb_nuit_script - 1);"""
     cursor.execute(query, [boitier, date])
@@ -360,7 +360,7 @@ def get_placette_old(cursor, placette, date):
     """
 
     query = """select etude, "lieu-dit", nom_point, passage
-        from bd_sons.bdd_placettes_2023 t1
+        from bd_sons.bdd_placettes t1
         where nom_point = %s
         and %s - to_char("date", \'YYYYMMdd\')::integer between 0 and (nb_nuit_script - 1);"""
     cursor.execute(query, [placette, date])
@@ -382,7 +382,7 @@ def getSiteParti(cursor, boitier, date):
     """
 
     query = """select site_vigie, participation_vigie
-        from bd_sons.bdd_placettes_2023 t1
+        from bd_sons.bdd_placettes t1
         where nom_point = %s
         and %s::date - "date" between 0 and (nb_nuit_script);"""
     cursor.execute(query, [boitier, date])
