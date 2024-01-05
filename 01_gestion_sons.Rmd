@@ -313,7 +313,7 @@ Puis mise à jour des Participations :
 ```{python}
 
 # Mettre ici le nom du csv a_coder_..._created.csv
-participations = pd.read_csv(f'{a_nommer}/a_coder20231129_122413_ok_created.csv', sep = ";")
+participations = pd.read_csv(f'{a_nommer}/a_coder20240105_135956_ok_created.csv', sep = ";")
 
 with contextlib.ExitStack() as ctx:
     connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
@@ -373,7 +373,7 @@ for subdir, dirs, files in os.walk(a_nommer):
         if prefixe:
             print(len(files))
             for file in files:
-            #     print(file)
+                 print(file)
                 if len(file.split('_')) > 4:
                     nom_complet = file
                 else:
