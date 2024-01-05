@@ -33,9 +33,7 @@ import csv # Pour le format csv
 import shutil as su # Autre outil de gestion des fichiers
 import numpy as np # Tableaux de données pour fonctions bdd
 import subprocess # pour appeler des scripts externes (shell)
-from fonctions_asellia import get_placette_count, get_ligne, updateVigie, 
-updatePoint, updateVigieId, updateParticipationId, get_prefix, get_placette,
-getSiteParti, nettoyageDossier
+from fonctions_asellia import get_placette_count, get_ligne, updateVigie, updatePoint, updateVigieId, updateParticipationId, get_prefix, get_placette, getSiteParti, nettoyageDossier
 
 ```
 

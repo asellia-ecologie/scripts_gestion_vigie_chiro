@@ -16,7 +16,7 @@ def updateStatus(cursor, colonne, site, date):
     colonne : str
         Column name in table must be in : renomme, extrait, vigie, analyse
     site : str
-        Name of site from Asellia’s bdd_placettes_2023
+        Name of site from Asellia’s bdd_placettes
     date : str
         Text formated date like : "19/02/2023"
 
@@ -54,7 +54,7 @@ def get_placette_count(cursor, boitier, date):
     """
     query = '''SELECT count(distinct(id)) FROM bd_sons.bdd_placettes
     WHERE num_sm2 = %s
-    and %s::date - "date" between 0 and (nb_nuit_script - 1);'''
+    and %s::date - "date" between 0 and (nombre_de_nuits - 1);'''
     cursor.execute(query, [boitier, date])
     results = cursor.fetchone()
     return results[0] if results else ''
@@ -80,7 +80,7 @@ def get_nuit_count(cursor, placette, date):
     """
     query = '''SELECT count(distinct(id)) FROM bd_sons.bdd_placettes
     WHERE nom_point = %s
-    and %s::date - "date" between 0 and (nb_nuit_script - 1);'''
+    and %s::date - "date" between 0 and (nombre_de_nuits - 1);'''
     cursor.execute(query, [placette, date])
     results = cursor.fetchone()
     return results[0] if results else ''
@@ -107,9 +107,9 @@ def nettoyageDossier(dossier):
 
 def get_ligne(cursor, boitier, date):
     """
-    Récupère les informations de la bdd_placette pour le boitier à la date
+    Récupère les informations de la bdd_placettes pour le boitier à la date
     voulue afin de remplir un fichier csv à alimenter dans le script
-    find_points.R (Y Bas, MNHN)
+    find_points.R (Y Bas, MNHN;fj eq)
 
     Parameters
     --------
@@ -129,7 +129,7 @@ def get_ligne(cursor, boitier, date):
         nom_point as Site, st_x(geom) as X, st_y(geom) as Y,
         'Pass'||passage as Participation,
         to_char("date",'DD/MM/YYYY') as StartDate,
-        to_char("date" + interval '1 day' * nb_nuit_script, 'DD/MM/YYYY') as
+        to_char("date" + interval '1 day' * nombre_de_nuits, 'DD/MM/YYYY') as
         EndDate, 1 as TypeStudy, hauteur_micro as MicHeight,
         case
         when num_sm2 in ('SM1', 'SM2', 'SM3', 'SM4') then 18
@@ -143,7 +143,7 @@ def get_ligne(cursor, boitier, date):
         'no' as NoiseFilter, '' as Comment
     from bd_sons.bdd_placettes t1
     where num_sm2 = %s
-    and %s::date - "date" between 0 and (nb_nuit_script - 1);"""
+    and %s::date - "date" between 0 and (nombre_de_nuits - 1);"""
     cursor.execute(query, [boitier, date])
     results = cursor.fetchone()
     print(results)
@@ -174,7 +174,7 @@ def get_ligne_placette(cursor, placette, date):
         nom_point as Site, st_x(geom) as X, st_y(geom) as Y,
         'Pass'||passage as Participation,
         to_char("date",'DD/MM/YYYY') as StartDate,
-        to_char("date" + interval '1 day' * nb_nuit_script, 'DD/MM/YYYY') as
+        to_char("date" + interval '1 day' * nombre_de_nuits, 'DD/MM/YYYY') as
         EndDate, 1 as TypeStudy, hauteur_micro as MicHeight,
         case
         when num_sm2 in ('SM1', 'SM2', 'SM3', 'SM4') then 18
@@ -188,7 +188,7 @@ def get_ligne_placette(cursor, placette, date):
         'no' as NoiseFilter, '' as Comment
     from bd_sons.bdd_placettes_2023 t1
     where nom_point = %s
-    and %s::date - "date" between 0 and (nb_nuit_script - 1);"""
+    and %s::date - "date" between 0 and (nombre_de_nuits - 1);"""
     cursor.execute(query, [placette, date])
     results = cursor.fetchone()
     print(results)
@@ -294,7 +294,7 @@ def get_prefix(cursor, boitier, date):
     query = """select code_total
         from bd_sons.bdd_placettes t1
         where num_sm2 = %s
-        and %s::date - "date" between 0 and (nb_nuit_script - 1);"""
+        and %s::date - "date" between 0 and (nombre_de_nuits - 1);"""
     cursor.execute(query, [boitier, date])
     results = cursor.fetchone()
     return results[0] if results else ''
@@ -318,7 +318,7 @@ def get_prefix_placette(cursor, placette, date):
     query = """select code_total
         from bd_sons.bdd_placettes t1
         where nom_point = %s
-        and %s::date - "date" between 0 and (nb_nuit_script - 1);"""
+        and %s::date - "date" between 0 and (nombre_de_nuits - 1);"""
     cursor.execute(query, [placette, date])
     results = cursor.fetchone()
     return results[0] if results else ''
@@ -340,7 +340,7 @@ def get_placette(cursor, boitier, date):
     query = """select etude, "lieu-dit", nom_point, passage
         from bd_sons.bdd_placettes t1
         where num_sm2 = %s
-        and %s - to_char("date", \'YYYYMMdd\')::integer between 0 and (nb_nuit_script - 1);"""
+        and %s - to_char("date", \'YYYYMMdd\')::integer between 0 and (nombre_de_nuits - 1);"""
     cursor.execute(query, [boitier, date])
     results = cursor.fetchone()
     return results if results else ''
@@ -362,7 +362,7 @@ def get_placette_old(cursor, placette, date):
     query = """select etude, "lieu-dit", nom_point, passage
         from bd_sons.bdd_placettes t1
         where nom_point = %s
-        and %s - to_char("date", \'YYYYMMdd\')::integer between 0 and (nb_nuit_script - 1);"""
+        and %s - to_char("date", \'YYYYMMdd\')::integer between 0 and (nombre_de_nuits - 1);"""
     cursor.execute(query, [placette, date])
     results = cursor.fetchone()
     return results if results else ''
@@ -384,7 +384,7 @@ def getSiteParti(cursor, boitier, date):
     query = """select site_vigie, participation_vigie
         from bd_sons.bdd_placettes t1
         where nom_point = %s
-        and %s::date - "date" between 0 and (nb_nuit_script);"""
+        and %s::date - "date" between 0 and (nombre_de_nuits);"""
     cursor.execute(query, [boitier, date])
     results = cursor.fetchone()
     return results if results else ''
