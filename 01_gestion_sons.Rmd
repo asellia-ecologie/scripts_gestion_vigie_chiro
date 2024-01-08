@@ -297,6 +297,9 @@ with contextlib.ExitStack() as ctx:
     cursor = ctx.enter_context(connection.cursor())
 
     for row in oldPoints.itertuples():
+        print(row.Site)
+        print(row.Carre)
+        print(row.Point)
         updateVigie(cursor, row.Site, row.Carre)
         updatePoint(cursor, row.Site, row.Point)
 
@@ -373,7 +376,7 @@ for subdir, dirs, files in os.walk(a_nommer):
         if prefixe:
             print(len(files))
             for file in files:
-                 print(file)
+                print(file)
                 if len(file.split('_')) > 4:
                     nom_complet = file
                 else:
