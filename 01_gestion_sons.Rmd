@@ -11,6 +11,7 @@ source("variables_perso.R")
 use_python(python)
 setwd(dossier)
 ```
+
 ## Appel des bibliothèques nécessaires
 
 ```{python}
@@ -106,6 +107,7 @@ for subdir, dirs, files in os.walk(a_classer):
                 os.rename(f"{subdir}/{file}", f"{subdir}/{nv_nom}")
 del subdir, dirs, files, file, nom, test_boitier, boite, jour, nv_nom, heure
 ```
+
 ### Renommage des SM2 sans prefixe
 
 ```{python}
@@ -166,7 +168,7 @@ for subdir, dirs, files in os.walk(a_classer):
 r.beep(sound = 1)
 ```
 
-### Vérification des placettes
+### Vérification des placettes + nuits boitiers
 
 ```{python}
 # Création du tableau vide pour les placettes à renommer
@@ -204,10 +206,6 @@ for subdir, dirs, files in os.walk(a_nommer):
         # Remplissage du tableau
         nuits_boitiers = pd.concat([nuits_boitiers, pd.DataFrame.from_records([{'boitier' : boitier, 'date' : date, 'date_int': int(date_int), 'heure_deb' : heure_deb, 'heure_fin' : heure_fin, 'duree_nuit' : ecart}])], ignore_index=True)
 
-```
-
-### Vérification des nuits/boitier avant codage vigie-chiro
-```{python}
 # Mise à jour du tableau avec le nombre de nuits par boitier (1 si ok):
 with contextlib.ExitStack() as ctx:
     connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
@@ -226,7 +224,9 @@ for _, row in nuits_boitiers.iterrows():
         print(f'Il y a un problème avec le boitier {row["boitier"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}')
     if row['duree_nuit'] < datetime.timedelta(hours = 8):
         print(f'il y a un problème avec le boitier {row["boitier"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}, la durée d’enregistrement est de {row["duree_nuit"]}')
+
 ```
+
 
 ### Création du csv pour code vigie-chiro
 
@@ -267,8 +267,8 @@ exists_csv_ok = os.path.exists(f"{a_nommer}/a_coder{now}_ok.csv")
 if exists_csv_ok:
     os.remove(f"{a_nommer}/a_coder{now}.csv")
 ```
-Ici exécuter le script find_points_orig.R
-Puis Participations.Rmd
+
+Ici exécuter le script find_points_orig.R Puis Participations.Rmd
 
 ### Mise a jour du point vigie chiro dans la bdd placettes
 
@@ -310,13 +310,13 @@ with contextlib.ExitStack() as ctx:
     cursor.close()
 r.beep(sound = 1)
 ```
-Puis mise à jour des Participations :
-## Update participation
+
+Puis mise à jour des Participations : \## Update participation
 
 ```{python}
 
 # Mettre ici le nom du csv a_coder_..._created.csv
-participations = pd.read_csv(f'{a_nommer}/a_coder20240105_135956_ok_created.csv', sep = ";")
+participations = pd.read_csv(f'{a_nommer}/a_coder20240219_151209_ok_created.csv', sep = ";")
 
 with contextlib.ExitStack() as ctx:
     connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
@@ -466,6 +466,7 @@ r.beep(sound = 1)
 ```
 
 ## Vérification
+
 Plus utile sauf en cas de doute sur tadam.py, mais a tjs fonctionné jusque-là.
 
 ```{python}
@@ -685,6 +686,3 @@ for subdir, dirs, files in os.walk(a_compresser):
             # os.system(f"copy {subdir}/{file} {a_compresser}/{siteParti[0]}/{siteParti[1]}/{file}")
 r.beep(sound = 1)
 ```
-
-
-
