@@ -1,7 +1,8 @@
-```{r}
+```{r localisation du dossier}
 dossier <- "/home/asellia_pc_chiro/kDrive2/Shared/BDD/SONS"
 setwd(dossier)
-
+```
+```{r préparation données}
 # mettre outil sélection robuste
 #espece <- "Barbar"
 
@@ -12,27 +13,31 @@ chemin_csv <- file.path(dossier, d)
 dos_scripts <- "00_SCRIPTS"
 # Si on a enregistré la compil et qu’on veut l’ouvrir :
 sons <- read.csv2("tadarida_2014_2023.csv")
+```
 
+```{r nettoyage données}
 
 # Ne garder que les lignes analysées :
+# D’ailleurs, pour intégration dans la bdd est-ce qu’on ne veut pas tout garder ?
 sons_asellia <- sons %>% filter(!is.na(observateur_taxon))
 
 # Virer les cellules observateur_taxon vide :
 sons_asellia <- sons_asellia %>% filter(observateur_taxon != "")
 # sons_asellia <- sons %>% filter(tadarida_taxon == "Tadten")
 
- 
- rm(sons)
- 
- sons_asellia$tadarida_probabilite <- str_replace(
+
+# Suppression du gros tableau sons
+rm(sons)
+
+# On garantit que tadarida probabilité soit au format numérique :
+sons_asellia$tadarida_probabilite <- str_replace(
   sons_asellia$tadarida_probabilite, ",", "."
 )
 sons_asellia$tadarida_probabilite <- as.numeric(
   sons_asellia$tadarida_probabilite
 )
 
- unique(sons_asellia$observateur_taxon)
- 
+
 ```
 
 
@@ -41,10 +46,16 @@ sons_asellia$tadarida_probabilite <- as.numeric(
 sons_asellia %>% filter(observateur_taxon == "Possible")
 
 ```
-## Suppression
+## Suppression des observateur_taxon erronés
 ```{r}
-liste_a_sup = ()
-sons_asellia <- sons_asellia %>% filter(observateur_taxon != "Possible")
+# lister toutes les valeurs de observateur_taxon pour identifier celles qui
+# posent problème
+
+unique(sons_asellia$observateur_taxon)
+
+# Liste à alimenter avec les mauvais observateur_taxon
+liste_a_sup <- c("valeur1", "valeur2", ...)
+sons_asellia <- sons_asellia %>% filter(!(observateur_taxon %in% liste_a_sup))
 ```
 
 ## Modifs obs_tax
@@ -57,8 +68,9 @@ sons_asellia$observateur_taxon <- str_to_title( # met en Maj
 ```
 
 ```{r}
-sons_asellia <- sons_asellia %>% select(-tag)
-
-sons_asellia <- unique(sons_asellia)
+# sons_asellia <- sons_asellia %>% select(-tag)
+# sons_asellia <- unique(sons_asellia)
+sons_asellia <- sons_asellia[!duplicated(
+                             sons_asellia[!names(sons_asellia) %in% c("tag")]),]
 ```
 
