@@ -1,0 +1,56 @@
+```{r}
+
+# Se mettre dans BDD/SONS depuis son ordi :
+dossier <- "/home/asellia_pc_chiro/kDrive2/Shared/BDD/SONS"
+setwd(dossier)
+date <- as.character(Sys.time())
+date <- strsplit(date, " ")
+date <- date[[1]][1]
+# indication du dossier où trouver les sons a traiter
+d <- "ANALYSES/csv"
+chemin_csv <- file.path(dossier, d)
+
+# Création d’une liste des fichiers csv
+fichiers_csv <- list.files(chemin_csv,
+                           pattern = "*.csv", full.names = TRUE)
+
+# Choix des colonnes que l’on veut garder des compils tadarida :
+colonnes <- c("Nom", "nom_du_fichier", "Type", "temps_debut", "temps_fin",
+              "frequence_mediane", "tadarida_taxon", "tadarida_probabilite",
+              "observateur_taxon",
+              "observateur_probabilite", "validateur_taxon",
+              "validateur_probabilite", "tag")
+
+add_filename <- function(x) {
+  df <- fread(x, sep = ";", select = colonnes)
+  transform(df, tag = tools::file_path_sans_ext(x))
+}
+
+# ouverture des csv et chargement dans la liste 'tables' :
+tables_compils <- lapply(fichiers_csv, add_filename)
+
+# vérification des compils
+for (i in seq_along(tables_compils)) {
+  if (nrow(tables_compils[[i]]) <= 1) {
+    print(fichiers_csv[i])
+  }
+}
+
+```
+
+```{r}
+
+tables_compils = tables_compils[-144]
+```
+
+```{r}
+col <- colonnes[-2]
+
+tables_compils <- lapply(tables_compils, setNames, col)
+# mise bout à bout de toutes les tables
+sons <- do.call(rbind, tables_compils)
+
+# Si on veut enregistrer la compil dans un gros csv :
+write.csv2(sons, paste0("compils_tadarida_", date, ".csv"))
+```
+

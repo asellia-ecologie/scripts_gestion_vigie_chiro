@@ -1,0 +1,64 @@
+```{r}
+dossier <- "/home/asellia_pc_chiro/kDrive2/Shared/BDD/SONS"
+setwd(dossier)
+
+# mettre outil sélection robuste
+#espece <- "Barbar"
+
+# indication du dossier où trouver les sons a traiter
+d <- "ANALYSES/csv"
+chemin_csv <- file.path(dossier, d)
+# et les scripts (pour faire appel à d’autres)
+dos_scripts <- "00_SCRIPTS"
+# Si on a enregistré la compil et qu’on veut l’ouvrir :
+sons <- read.csv2("tadarida_2014_2023.csv")
+
+
+# Ne garder que les lignes analysées :
+sons_asellia <- sons %>% filter(!is.na(observateur_taxon))
+
+# Virer les cellules observateur_taxon vide :
+sons_asellia <- sons_asellia %>% filter(observateur_taxon != "")
+# sons_asellia <- sons %>% filter(tadarida_taxon == "Tadten")
+
+ 
+ rm(sons)
+ 
+ sons_asellia$tadarida_probabilite <- str_replace(
+  sons_asellia$tadarida_probabilite, ",", "."
+)
+sons_asellia$tadarida_probabilite <- as.numeric(
+  sons_asellia$tadarida_probabilite
+)
+
+ unique(sons_asellia$observateur_taxon)
+ 
+```
+
+
+```{r vérif observateur_taxon}
+# Et si on trouve une valeur étrange on va la chercher :
+sons_asellia %>% filter(observateur_taxon == "Possible")
+
+```
+## Suppression
+```{r}
+liste_a_sup = ()
+sons_asellia <- sons_asellia %>% filter(observateur_taxon != "Possible")
+```
+
+## Modifs obs_tax
+```{r}
+sons_asellia$observateur_taxon <- str_to_title( # met en Maj
+  tolower( # ce qui a été mis en min
+    sons_asellia$observateur_taxon
+  )
+)
+```
+
+```{r}
+sons_asellia <- sons_asellia %>% select(-tag)
+
+sons_asellia <- unique(sons_asellia)
+```
+
