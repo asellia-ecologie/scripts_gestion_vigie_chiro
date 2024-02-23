@@ -186,7 +186,7 @@ def get_ligne_placette(cursor, placette, date):
         999 as FreqMax, 12 as TriggerLevel, 999 as MinDur, 999 as MaxDur,
         2 as TrigWin, 0 as Pause, 600 as TrigWinMax, 5 as FileSplittingLength,
         'no' as NoiseFilter, '' as Comment
-    from bd_sons.bdd_placettes_2023 t1
+    from bd_sons.bdd_placettes t1
     where nom_point = %s
     and %s::date - "date" between 0 and (nombre_de_nuits - 1);"""
     cursor.execute(query, [placette, date])

@@ -1,7 +1,5 @@
 # Gestion des sons placettes Asellia pour TADARIDA
-
 ## Première cellule à exécuter pour paramétrer Python
-
 ```{r setup, include=FALSE}
 # Pour utiliser Python :
 source("variables_perso.R")
@@ -11,8 +9,8 @@ library(beepr)
 use_python(python)
 setwd(dossier)
 ```
-## Appel des bibliothèques nécessaires
 
+## Appel des bibliothèques nécessaires
 ```{python}
 import os # pour la gestion des fichiers
 import sys # idem
@@ -20,7 +18,7 @@ from pathlib import Path # accès aux dossiers
 import psycopg2 as pg # accès à la base de données
 import time # gestion formats date/heure
 import datetime
-from id_bdd import USER, PASSWORD, HOST, PORT, DB_NAME, HOME 
+from id_bdd import USER, PASSWORD, HOST, PORT, DB_NAME
 # Contenu de idd_bdd.py à la racine du dossier :
     # DB_NAME = 'nom_bdd'
     # USER = 'nom_utilisateur'
@@ -40,12 +38,11 @@ sevenzip
 ```
 
 # Petite boite à outils pour le traitement des fichiers sons vigie-chiro
-
 Préparation des dossiers :
-
 ```{python}
 # Le dossier de travail et celui ou se trouve le script python
 # os.chdir(dossier)
+HOME = "/home/asellia_pc_chiro/Bureau/GESTION_SONS/05_VIEUX_SONS"
 os.chdir(HOME)
 
 # Modifier rootdir si a_classer, a_nommer, a_convertir et a_compresser ne sont
@@ -53,7 +50,7 @@ os.chdir(HOME)
 
 #------------ Définition des dossiers de traitement des fichiers -------------#
 rootdir = os.getcwd()
-a_classer = os.path.join(rootdir, '01b_a_classer_old')
+a_classer = os.path.join(rootdir, '01_a_classer')
 #a_prefixer = os.path.join(rootdir, 'wac_sm2')
 a_nommer = os.path.join(rootdir, '02_a_nommer')
 #a_nommer_vinc = os.path.join(rootdir, 'a_nommer_vinc')
@@ -63,6 +60,7 @@ a_compresser = os.path.join(rootdir, '04_a_compresser')
 a_envoyer = os.path.join(rootdir, '05_a_envoyer')
 stock = os.path.join(rootdir, 'stock')
 ```
+
 ### Bonus si on a trié les sons dans les dossier mais qu’on veut repartir à 0
 ```{python} 
 # Si on veut déplacer les fichiers des dossiers WAC seulement vers
@@ -75,8 +73,17 @@ for subdir, dirs, files in os.walk(a_nommer):
 
 ```
 
-### Évaluation des fichiers .wav et renommage si Passive Recorder
+### Renommage nom de boitier
+Aller avec cd vers le dossier où se trouve les sons à modifier
+```{bash}
 
+cd /home/asellia_pc_chiro/Bureau/GESTION_SONS/05_VIEUX_SONS/
+find 01_a_classer -type f -exec rename 's/RC-0/SM/' '{}' \;
+
+
+```
+
+### Évaluation des fichiers .wav et renommage si Passive Recorder
 ```{python}
 # Scanne le dossier a_classer pour des fichiers PR et les renomme au format :
     # PR01_20230415_195512.wav
@@ -100,7 +107,6 @@ del nom, test_boitier, boite, nv_nom, subdir, dirs, files, file
 ```
 
 ### Évaluation des fichiers .wav et renommage si Swift
-
 ```{python}
 # Même principe que la cellule précédente, les critères varient
 for subdir, dirs, files in os.walk(a_classer):
@@ -119,8 +125,8 @@ for subdir, dirs, files in os.walk(a_classer):
                 os.rename(f"{subdir}/{file}", f"{subdir}/{nv_nom}")
 del subdir, dirs, files, file, nom, test_boitier, boite, jour, nv_nom, heure
 ```
-### Renommage des SM2 sans prefixe
 
+### Renommage des SM2 sans prefixe
 ```{python}
 # print(a_prefixer)
 # numBoitier = 'SM2_' # à modifier selon le boitier à renommer
@@ -135,8 +141,6 @@ del subdir, dirs, files, file, nom, test_boitier, boite, jour, nv_nom, heure
 ```
 
 ### Déplacer les fichiers dans le bon dossier par boitier puis par date
-
-
 ```{python classement des fichiers}
 for subdir, dirs, files in os.walk(a_classer):
     for file in files:
@@ -144,8 +148,8 @@ for subdir, dirs, files in os.walk(a_classer):
         if file.split('.')[-1] in ('wac', 'wav') and len(file) > 5:
             nom = file.split('.')[0]
             placette = nom.split('_')[0]
-            date = nom.split('_')[3]
-            heure = int(nom.split('_')[4][:2])
+            date = nom.split('_')[-2]
+            heure = int(nom.split('_')[-1][:2])
             path_placette = os.path.join(a_nommer, placette)
             exists_placette = os.path.exists(path_placette)
 # exists_wac = os.path.exists(f"{boitier}/WAC")
@@ -173,15 +177,17 @@ for subdir, dirs, files in os.walk(a_classer):
                     os.makedirs(f"{path_placette}/{date}/WAC")
                     os.makedirs(f"{path_placette}/{date}/WAV")
 
+
                 if len(file.split('_')[-1]) == 7:
                     os.rename(f"{subdir}/{file}", f"{path_placette}/{date}/WAV/{file}")
                 else:
                     os.rename(f"{subdir}/{file}", f"{path_placette}/{date}/WAC/{file}")
+.nettoyageDossier(a_classer) 
+nettoyageDossier(a_classer) 
 r.beep(sound = 1)
 ```
 
 ### Vérification des placettes
-
 ```{python verif placettes}
 # Création du tableau vide pour les placettes à renommer
 nuits_boitiers = pd.DataFrame(columns = ['placette', 'date', 'date_int', 'heure_deb', 'heure_fin','duree_nuit', 'code_vigie', 'nombre_de_nuits', 'nb_placettes'])
@@ -191,7 +197,7 @@ for subdir, dirs, files in os.walk(a_nommer):
 
     if subdir.split(os.sep)[-1] == 'WAC':
 
-        # On récupère le nom de boitier :
+        # On récupère le nom de placette :
         placette = subdir.split(os.sep)[-3]
         print(placette)
         # # La date :
@@ -244,7 +250,6 @@ for _, row in nuits_boitiers.iterrows():
 ```
 
 ### Création du csv pour code vigie-chiro
-
 ```{python creation csv}
 now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 print(now)
@@ -283,11 +288,11 @@ exists_csv_ok = os.path.exists(f"{a_nommer}/a_coder{now}_ok.csv")
 if exists_csv_ok:
     os.remove(f"{a_nommer}/a_coder{now}.csv")
 ```
+
 Ici exécuter le script find_points_orig.R
 Puis Participations.Rmd
 
 ### Mise a jour du point vigie chiro dans la bdd placettes
-
 ```{python}
 
 newPoints = pd.read_csv(f'{a_nommer}/NewPoints_ok.csv', sep = ";", dtype = {'Carre' : str})
@@ -324,13 +329,13 @@ with contextlib.ExitStack() as ctx:
     cursor.close()
 r.beep(sound = 1)
 ```
-Puis mise à jour des Participations :
-## Update participation
 
+Puis mise à jour des Participations (attention penser à modifier le nom du fichier a_coder):
+## Update participation
 ```{python}
 
 # Mettre ici le nom du csv a_coder_..._created.csv
-participations = pd.read_csv(f'{a_nommer}/a_coder20231030_101340_ok_created.csv', sep = ";")
+participations = pd.read_csv(f'{a_nommer}/a_coder20240221_193538_ok_created.csv', sep = ";")
 
 
 with contextlib.ExitStack() as ctx:
@@ -352,14 +357,14 @@ r.beep(sound = 1)
 ```
 
 ### Renommage (à adapter à la requête sql)
-
 ```{python}
 # On parcourt le dossier 'a_nommer'
 for subdir, dirs, files in os.walk(a_nommer):
 
     if subdir.split(os.sep)[-1] == 'WAC':
         prefixe = ' '
-        # # On récupère le nom de boitier :
+        #  On récupère le nom de placette 
+        # Pametre à changer selon selon nomenclature fichiers:
         placette = subdir.split(os.sep)[-3]
 
         # # La date :
@@ -456,7 +461,6 @@ r.beep(sound = 1)
 ```
 
 ### Découpage/expansion des fichiers (attention, demandeur en ressources, ne pas faire pour des dizaines de nuits)
-
 ```{python}
 nettoyageDossier(a_convertir)
 nettoyageDossier(a_convertir)
@@ -484,8 +488,8 @@ for subdir, dirs, files in os.walk(a_convertir):
             subprocess.run(["tadam.py", "-i", f"{subdir}{os.sep}WAC", "-o", f"{subdir}{os.sep}WAV", "-r", "0.1", "-l", "50", "-v"])
 r.beep(sound = 1)
 ```
-### Rangement dans a_compresser
 
+### Rangement dans a_compresser
 ```{python}
 for subdir, dirs, files in os.walk(a_convertir):
     if subdir.split(os.sep)[-1] ==  'WAC':
@@ -554,10 +558,7 @@ nettoyageDossier(a_compresser)
 r.beep(sound = 1)
 ```
 
-
-
 ## Zippage
-
 ```{python}
 for subdir, dirs, files in os.walk(a_compresser):
     if 'WAV' in dirs:
@@ -570,7 +571,6 @@ for subdir, dirs, files in os.walk(a_compresser):
 ```
 
 ### Préparation des fichiers tar pour envoi
-
 ```{python}
 
 path_tar = os.path.join(a_envoyer, 'tar')
@@ -584,7 +584,7 @@ if not exists_tar:
 for subdir, dirs, files in os.walk(a_compresser):
     print(subdir)
     if subdir.split(os.sep)[-1] == 'WAV' and len(files)>0:
-        placette = files[0].split('_')[-6]
+        placette = files[0].split('_')[1]
         dateint = files[0].split('_')[-3]
         date = pd.to_datetime(dateint, format = '%Y%m%d').strftime('%Y-%m-%d')
         print(date)
