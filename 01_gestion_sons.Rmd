@@ -1,7 +1,6 @@
 # Gestion des sons placettes Asellia pour TADARIDA
 
 ## Première cellule à exécuter pour paramétrer Python
-
 ```{r setup, include=FALSE}
 # Pour utiliser Python :
 library(reticulate)
@@ -13,7 +12,6 @@ setwd(dossier)
 ```
 
 ## Appel des bibliothèques nécessaires
-
 ```{python}
 import os # pour la gestion des fichiers
 import sys # idem
@@ -39,11 +37,10 @@ from fonctions_asellia import get_placette_count, get_ligne, updateVigie, update
 ```
 
 # Petite boite à outils pour le traitement des fichiers sons vigie-chiro
-
 Préparation des dossiers :
-
 ```{python}
 # Le dossier de travail et celui ou se trouve le script python
+HOME = "/home/asellia_pc_chiro/Bureau/GESTION_SONS/05_VIEUX_SONS" # option vieux sons
 os.chdir(HOME)
 # os.chdir('/media/asellia_pc_chiro/T_01/02_SONS_A_TRAITER')
 
@@ -64,7 +61,6 @@ stock = os.path.join(rootdir, 'stock')
 ```
 
 ### Évaluation des fichiers .wav et renommage si Passive Recorder
-
 ```{python}
 # Scanne le dossier a_classer pour des fichiers PR et les renomme au format :
     # PR01_20230415_195512.wav
@@ -88,7 +84,6 @@ del nom, test_boitier, boite, nv_nom, subdir, dirs, files, file
 ```
 
 ### Évaluation des fichiers .wav et renommage si Swift
-
 ```{python}
 # Même principe que la cellule précédente, les critères varient
 for subdir, dirs, files in os.walk(a_classer):
@@ -124,7 +119,6 @@ del subdir, dirs, files, file, nom, test_boitier, boite, jour, nv_nom, heure
 ```
 
 ### Déplacer les fichiers dans le bon dossier par boitier puis par date
-
 ```{python classement des fichiers}
 for subdir, dirs, files in os.walk(a_classer):
     for file in files:
@@ -169,7 +163,6 @@ r.beep(sound = 1)
 ```
 
 ### Vérification des placettes + nuits boitiers
-
 ```{python}
 # Création du tableau vide pour les placettes à renommer
 nuits_boitiers = pd.DataFrame(columns = ['boitier', 'date', 'date_int', 'heure_deb', 'heure_fin','duree_nuit', 'code_vigie', 'nombre_de_nuits', 'nb_placettes'])
