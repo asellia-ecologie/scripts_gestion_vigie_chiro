@@ -5,6 +5,7 @@ cred.R
 .Rproj.user
 *.Rproj
 04_tarification_vigie.R
+05_export_participations.R
 prep_da*
 *~
 variables_perso.R

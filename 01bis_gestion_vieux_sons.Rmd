@@ -140,81 +140,81 @@ for subdir, dirs, files in os.walk(a_prefixer):
 
 ```
 
-### Déplacer les fichiers dans le bon dossier par boitier puis par date
+### Déplacer les fichiers dans le bon dossier par placette puis par date
 ```{python classement des fichiers}
 for subdir, dirs, files in os.walk(a_classer):
     for file in files:
         print(file)
         if file.split('.')[-1] in ('wac', 'wav') and len(file) > 5:
             nom = file.split('.')[0]
-            #placette = nom.split('_')[0]
-            boitier = nom.split('_')[0]
+            placette = nom.split('_')[0]
+            # boitier = nom.split('_')[0]
             #date = nom.split('_')[-2]
             date = nom.split('_')[-2]
             heure = int(nom.split('_')[-1][:2])
-            #path_placette = os.path.join(a_nommer, placette)
-            #exists_placette = os.path.exists(path_placette)
-            path_boitier = os.path.join(a_nommer, boitier)
-            exists_boitier = os.path.exists(path_boitier)
+            path_placette = os.path.join(a_nommer, placette)
+            exists_placette = os.path.exists(path_placette)
+            #path_boitier = os.path.join(a_nommer, boitier)
+            #exists_boitier = os.path.exists(path_boitier)
 
-            #if not exists_placette:
-                #os.makedirs(f"{path_placette}")
-            if not exists_boitier:
-                os.makedirs(f"{path_boitier}")
+            if not exists_placette:
+                os.makedirs(f"{path_placette}")
+            # if not exists_boitier:
+               # os.makedirs(f"{path_boitier}")
                 
-            #if heure > 11 and heure < 24:
-                #exists_date = os.path.exists(f"{path_placette}/{date}")
-                #if not exists_date:
-                    #os.makedirs(f"{path_placette}/{date}")
-                    #os.makedirs(f"{path_placette}/{date}/WAC")
-                    #os.makedirs(f"{path_placette}/{date}/WAV")
-                    
             if heure > 11 and heure < 24:
-                exists_date = os.path.exists(f"{path_boitier}/{date}")
+                exists_date = os.path.exists(f"{path_placette}/{date}")
                 if not exists_date:
-                    os.makedirs(f"{path_boitier}/{date}")
-                    os.makedirs(f"{path_boitier}/{date}/WAC")
-                    os.makedirs(f"{path_boitier}/{date}/WAV")
+                    os.makedirs(f"{path_placette}/{date}")
+                    os.makedirs(f"{path_placette}/{date}/WAC")
+                    os.makedirs(f"{path_placette}/{date}/WAV")
                     
-                #if len(file.split('_')[-1]) == 7:
-                    #os.rename(f"{subdir}/{file}", f"{path_placette}/{date}/WAV/{file}")
-                #else: 
-                    #os.rename(f"{subdir}/{file}", f"{path_placette}/{date}/WAC/{file}")
+            # if heure > 11 and heure < 24:
+            #     exists_date = os.path.exists(f"{path_boitier}/{date}")
+            #     if not exists_date:
+            #         os.makedirs(f"{path_boitier}/{date}")
+            #         os.makedirs(f"{path_boitier}/{date}/WAC")
+            #         os.makedirs(f"{path_boitier}/{date}/WAV")
                     
                 if len(file.split('_')[-1]) == 7:
-                    os.rename(f"{subdir}/{file}", f"{path_boitier}/{date}/WAV/{file}")
+                    os.rename(f"{subdir}/{file}", f"{path_placette}/{date}/WAV/{file}")
                 else: 
-                    os.rename(f"{subdir}/{file}", f"{path_boitier}/{date}/WAC/{file}")
+                    os.rename(f"{subdir}/{file}", f"{path_placette}/{date}/WAC/{file}")
                     
-            #else:
-                #date = pd.to_datetime(date, format = '%Y%m%d') # Transformation dans un format date
-                #date = date - pd.Timedelta(days = 1) # Calcul de la veille
-                #date = str(date.strftime('%Y%m%d')) # Retour en format texte
-                #exists_date = os.path.exists(f"{path_placette}/{date}/WAC")
-                
-                # si le dossier n’existe pas on le crée :
-                
-                #if not exists_date:
-                    #os.makedirs(f"{path_placette}/{date}")
-                    #os.makedirs(f"{path_placette}/{date}/WAC")
-                    #os.makedirs(f"{path_placette}/{date}/WAV")
+                # if len(file.split('_')[-1]) == 7:
+                #     os.rename(f"{subdir}/{file}", f"{path_boitier}/{date}/WAV/{file}")
+                # else: 
+                #     os.rename(f"{subdir}/{file}", f"{path_boitier}/{date}/WAC/{file}")
                     
             else:
                 date = pd.to_datetime(date, format = '%Y%m%d') # Transformation dans un format date
                 date = date - pd.Timedelta(days = 1) # Calcul de la veille
                 date = str(date.strftime('%Y%m%d')) # Retour en format texte
-                exists_date = os.path.exists(f"{path_boitier}/{date}/WAC")
+                exists_date = os.path.exists(f"{path_placette}/{date}/WAC")
+                
                 # si le dossier n’existe pas on le crée :
+                
                 if not exists_date:
-                    os.makedirs(f"{path_boitier}/{date}")
-                    os.makedirs(f"{path_boitier}/{date}/WAC")
-                    os.makedirs(f"{path_boitier}/{date}/WAV")
+                    os.makedirs(f"{path_placette}/{date}")
+                    os.makedirs(f"{path_placette}/{date}/WAC")
+                    os.makedirs(f"{path_placette}/{date}/WAV")
+                    
+            # else:
+            #     date = pd.to_datetime(date, format = '%Y%m%d') # Transformation dans un format date
+            #     date = date - pd.Timedelta(days = 1) # Calcul de la veille
+            #     date = str(date.strftime('%Y%m%d')) # Retour en format texte
+            #     exists_date = os.path.exists(f"{path_boitier}/{date}/WAC")
+            #     # si le dossier n’existe pas on le crée :
+            #     if not exists_date:
+            #         os.makedirs(f"{path_boitier}/{date}")
+            #         os.makedirs(f"{path_boitier}/{date}/WAC")
+            #         os.makedirs(f"{path_boitier}/{date}/WAV")
 
 
                 if len(file.split('_')[-1]) == 7:
-                    os.rename(f"{subdir}/{file}", f"{path_boitier}/{date}/WAV/{file}")
+                    os.rename(f"{subdir}/{file}", f"{path_placette}/{date}/WAV/{file}")
                 else:
-                    os.rename(f"{subdir}/{file}", f"{path_boitier}/{date}/WAC/{file}")
+                    os.rename(f"{subdir}/{file}", f"{path_placette}/{date}/WAC/{file}")
 nettoyageDossier(a_classer) 
 nettoyageDossier(a_classer) 
 r.beep(sound = 1)
@@ -224,19 +224,19 @@ r.beep(sound = 1)
 ```{python verif placettes}
 # Création du tableau vide pour les placettes/boitiers à renommer
 
-#nuits_boitiers = pd.DataFrame(columns = ['placette', 'date', 'date_int', 'heure_deb', 'heure_fin','duree_nuit', 'code_vigie', 'nombre_de_nuits', 'nb_placettes'])
-nuits_boitiers = pd.DataFrame(columns = ['boitier', 'date', 'date_int', 'heure_deb', 'heure_fin','duree_nuit', 'code_vigie', 'nombre_de_nuits', 'nb_placettes'])
+nuits_boitiers = pd.DataFrame(columns = ['placette', 'date', 'date_int', 'heure_deb', 'heure_fin','duree_nuit', 'code_vigie', 'nombre_de_nuits', 'nb_placettes'])
+#nuits_boitiers = pd.DataFrame(columns = ['boitier', 'date', 'date_int', 'heure_deb', 'heure_fin','duree_nuit', 'code_vigie', 'nombre_de_nuits', 'nb_placettes'])
 
 # On parcourt le dossier 'a_nommer'
 for subdir, dirs, files in os.walk(a_nommer):
 
     if subdir.split(os.sep)[-1] == 'WAC':
 
-        # On récupère le nom de boitier :
-        #placette = subdir.split(os.sep)[-3]
-        #print(placette)
-        boitier = subdir.split(os.sep)[-3]
-        print(boitier)
+        # On récupère le nom de placette :
+        placette = subdir.split(os.sep)[-3]
+        print(placette)
+        #boitier = subdir.split(os.sep)[-3]
+        #print(boitier)
         
         # # La date :
         date = pd.to_datetime(subdir.split(os.sep)[-2], format = '%Y%m%d').strftime('%Y-%m-%d')
@@ -257,13 +257,13 @@ for subdir, dirs, files in os.walk(a_nommer):
         ecart = max(dates_heures) - min(dates_heures)
         print(ecart)
         if ecart < datetime.timedelta(hours=7):
-            #print(placette, date)
-            print(boitier, date)
+            print(placette, date)
+            #print(boitier, date)
             print('nuit courte')
 
         # Remplissage du tableau
-        #nuits_boitiers = pd.concat([nuits_boitiers, pd.DataFrame.from_records([{'placette' : placette, 'date' : date, 'date_int': int(date_int), 'heure_deb' : heure_deb, 'heure_fin' : heure_fin, 'duree_nuit' : ecart}])], ignore_index=True)
-        nuits_boitiers = pd.concat([nuits_boitiers, pd.DataFrame.from_records([{'boitier' : boitier, 'date' : date, 'date_int': int(date_int), 'heure_deb' : heure_deb, 'heure_fin' : heure_fin, 'duree_nuit' : ecart}])], ignore_index=True)
+        nuits_boitiers = pd.concat([nuits_boitiers, pd.DataFrame.from_records([{'placette' : placette, 'date' : date, 'date_int': int(date_int), 'heure_deb' : heure_deb, 'heure_fin' : heure_fin, 'duree_nuit' : ecart}])], ignore_index=True)
+        # nuits_boitiers = pd.concat([nuits_boitiers, pd.DataFrame.from_records([{'boitier' : boitier, 'date' : date, 'date_int': int(date_int), 'heure_deb' : heure_deb, 'heure_fin' : heure_fin, 'duree_nuit' : ecart}])], ignore_index=True)
 
 # Mise à jour du tableau avec le nombre de nuits par boitier (1 si ok):
 with contextlib.ExitStack() as ctx:
@@ -276,22 +276,22 @@ with contextlib.ExitStack() as ctx:
         #total = get_placette_count(cursor, rang['boitier'], rang['date'])
         nuits_boitiers.at[_, 'nb_placettes'] = total
 
-        #print(row['placette'], row['date'], total)
-        print(row['boitier'], row['date'], total)
+        print(row['placette'], row['date'], total)
+        #print(row['boitier'], row['date'], total)
     cursor.close()
 
 # Vérif de la valeur dans le tableau et renvoi d’un message pour aller vérifier dans la bdd_placettes s’il y a un pb :
-#for _, row in nuits_boitiers.iterrows():
-    #if row['nb_placettes'] != 1:
-        #print(f'Il y a un problème avec le boitier {row["placette"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}')
-    #if row['duree_nuit'] < datetime.timedelta(hours = 7):
-        #print(f'il y a un problème avec le boitier {row["placette"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}, la durée d’enregistrement est de {row["duree_nuit"]}')
-        
 for _, row in nuits_boitiers.iterrows():
     if row['nb_placettes'] != 1:
-        print(f'Il y a un problème avec le boitier {row["boitier"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}')
+        print(f'Il y a un problème avec le boitier {row["placette"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}')
     if row['duree_nuit'] < datetime.timedelta(hours = 7):
-        print(f'il y a un problème avec le boitier {row["boitier"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}, la durée d’enregistrement est de {row["duree_nuit"]}')
+        print(f'il y a un problème avec le boitier {row["placette"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}, la durée d’enregistrement est de {row["duree_nuit"]}')
+        
+# for _, row in nuits_boitiers.iterrows():
+#     if row['nb_placettes'] != 1:
+#         print(f'Il y a un problème avec le boitier {row["boitier"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}')
+#     if row['duree_nuit'] < datetime.timedelta(hours = 7):
+#         print(f'il y a un problème avec le boitier {row["boitier"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}, la durée d’enregistrement est de {row["duree_nuit"]}')
 
 ```
 
@@ -312,8 +312,8 @@ with contextlib.ExitStack() as ctx:
 
     for _, row in nuits_boitiers.iterrows():
         rang = dict(row)
-        #ligne = get_ligne_placette(cursor, rang['placette'], rang['date'])
-        ligne = get_ligne_placette(cursor, rang['boitier'], rang['date'])
+        ligne = get_ligne_placette(cursor, rang['placette'], rang['date'])
+        #ligne = get_ligne_placette(cursor, rang['boitier'], rang['date'])
         print(ligne)
 
         with open(f'{a_nommer}/a_coder{now}.csv', 'a', newline= '') as file:
@@ -325,8 +325,8 @@ with contextlib.ExitStack() as ctx:
 # Vérif de la valeur dans le tableau et renvoi d’un message pour aller vérifier dans la bdd_placettes s’il y a un pb :
 for _, row in nuits_boitiers.iterrows():
     if row['nb_placettes'] != 1:
-        #print(f'Il y a un problème avec la placette {row["placette"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}')
-        print(f'Il y a un problème avec la placette {row["boitier"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}')
+        print(f'Il y a un problème avec la placette {row["placette"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}')
+        #print(f'Il y a un problème avec la placette {row["boitier"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}')
 
 csv_orig = pd.read_csv(f"{a_nommer}/a_coder{now}.csv")
 csv2 = csv_orig.drop_duplicates()
@@ -343,38 +343,43 @@ Puis Participations.Rmd
 ### Mise a jour du point vigie chiro dans la bdd placettes
 ```{python}
 
-newPoints = pd.read_csv(f'{a_nommer}/NewPoints_ok.csv', sep = ";", dtype = {'Carre' : str})
-oldPoints = pd.read_csv(f'{a_nommer}/OldPoints_ok.csv', sep = ";", dtype = {'titre' : str})
+if os.path.exists(f'{a_nommer}/NewPoints_ok.csv'):
+    newPoints = pd.read_csv(f'{a_nommer}/NewPoints_ok.csv', sep = ";", dtype = {'Carre' : str})
 
-oldPoints[["vigiech", "pointfixe","Carre"]] = oldPoints["titre"].str.split('-', n=3, expand = True)
-print(oldPoints["Carre"])
-with contextlib.ExitStack() as ctx:
-    connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
-    cursor = ctx.enter_context(connection.cursor())
 
-    for row in newPoints.itertuples():
-        updateVigie(cursor, row.Site, row.Carre)
-        updatePoint(cursor, row.Site, row.Point)
+    with contextlib.ExitStack() as ctx:
+        connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
+        cursor = ctx.enter_context(connection.cursor())
+    
+        for row in newPoints.itertuples():
+            updateVigie(cursor, row.Site, row.Carre)
+            updatePoint(cursor, row.Site, row.Point)
+    
+            updated_rows = cursor.rowcount
+            print(updated_rows)
+                # Commit the changes to the database
+            connection.commit()
+        cursor.close()
+    os.remove(f'{a_nommer}/NewPoints_ok.csv')
 
-        updated_rows = cursor.rowcount
-        print(updated_rows)
-            # Commit the changes to the database
-        connection.commit()
-    cursor.close()
-
-with contextlib.ExitStack() as ctx:
-    connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
-    cursor = ctx.enter_context(connection.cursor())
-
-    for row in oldPoints.itertuples():
-        updateVigie(cursor, row.Site, row.Carre)
-        updatePoint(cursor, row.Site, row.Point)
-
-        updated_rows = cursor.rowcount
-        print(updated_rows)
-            # Commit the changes to the database
-        connection.commit()
-    cursor.close()
+if os.path.exists(f'{a_nommer}/OldPoints_ok.csv'):    
+    oldPoints = pd.read_csv(f'{a_nommer}/OldPoints_ok.csv', sep = ";", dtype = {'titre' : str})
+    oldPoints[["vigiech", "pointfixe","Carre"]] = oldPoints["titre"].str.split('-', n=3, expand = True)
+    print(oldPoints["Carre"])
+    with contextlib.ExitStack() as ctx:
+        connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
+        cursor = ctx.enter_context(connection.cursor())
+    
+        for row in oldPoints.itertuples():
+            updateVigie(cursor, row.Site, row.Carre)
+            updatePoint(cursor, row.Site, row.Point)
+    
+            updated_rows = cursor.rowcount
+            print(updated_rows)
+                # Commit the changes to the database
+            connection.commit()
+        cursor.close()
+    os.remove(f'{a_nommer}/OldPoints_ok.csv')
 r.beep(sound = 1)
 ```
 
@@ -383,7 +388,7 @@ Puis mise à jour des Participations (attention penser à modifier le nom du fic
 ```{python}
 
 # Mettre ici le nom du csv a_coder_..._created.csv
-participations = pd.read_csv(f'{a_nommer}/a_coder20240224_111047_ok_created.csv', sep = ";")
+participations = pd.read_csv(f'{a_nommer}/a_coder20240306_124256_ok_created.csv', sep = ";")
 
 
 with contextlib.ExitStack() as ctx:
