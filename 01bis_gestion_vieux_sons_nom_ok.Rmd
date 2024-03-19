@@ -266,41 +266,44 @@ Ici exécuter le script find_points_orig.R Puis Participations.Rmd
 ### Mise a jour du point vigie chiro dans la bdd placettes
 
 ```{python}
-newPoints = pd.read_csv(f'{a_nommer}/NewPoints_ok.csv', sep = ";", dtype = {'Carre' : str})
-oldPoints = pd.read_csv(f'{a_nommer}/OldPoints_ok.csv', sep = ";", dtype = {'titre' : str})
 
-oldPoints[["vigiech", "pointfixe","Carre"]] = oldPoints["titre"].str.split('-', n=3, expand = True)
-print(oldPoints["Carre"])
-with contextlib.ExitStack() as ctx:
-    connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
-    cursor = ctx.enter_context(connection.cursor())
+if os.path.exists(f'{a_nommer}/NewPoints_ok.csv'):
+    newPoints = pd.read_csv(f'{a_nommer}/NewPoints_ok.csv', sep = ";", dtype = {'Carre' : str})
 
-    for row in newPoints.itertuples():
-        updateVigie(cursor, row.Site, row.Carre)
-        updatePoint(cursor, row.Site, row.Point)
 
-        updated_rows = cursor.rowcount
-        print(updated_rows)
-            # Commit the changes to the database
-        connection.commit()
-    cursor.close()
+    with contextlib.ExitStack() as ctx:
+        connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
+        cursor = ctx.enter_context(connection.cursor())
+    
+        for row in newPoints.itertuples():
+            updateVigie(cursor, row.Site, row.Carre)
+            updatePoint(cursor, row.Site, row.Point)
+    
+            updated_rows = cursor.rowcount
+            print(updated_rows)
+                # Commit the changes to the database
+            connection.commit()
+        cursor.close()
+    os.remove(f'{a_nommer}/NewPoints_ok.csv')
 
-with contextlib.ExitStack() as ctx:
-    connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
-    cursor = ctx.enter_context(connection.cursor())
-
-    for row in oldPoints.itertuples():
-        print(row.Site)
-        print(row.Carre)
-        print(row.Point)
-        updateVigie(cursor, row.Site, row.Carre)
-        updatePoint(cursor, row.Site, row.Point)
-
-        updated_rows = cursor.rowcount
-        print(updated_rows)
-            # Commit the changes to the database
-        connection.commit()
-    cursor.close()
+if os.path.exists(f'{a_nommer}/OldPoints_ok.csv'):    
+    oldPoints = pd.read_csv(f'{a_nommer}/OldPoints_ok.csv', sep = ";", dtype = {'titre' : str})
+    oldPoints[["vigiech", "pointfixe","Carre"]] = oldPoints["titre"].str.split('-', n=3, expand = True)
+    print(oldPoints["Carre"])
+    with contextlib.ExitStack() as ctx:
+        connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
+        cursor = ctx.enter_context(connection.cursor())
+    
+        for row in oldPoints.itertuples():
+            updateVigie(cursor, row.Site, row.Carre)
+            updatePoint(cursor, row.Site, row.Point)
+    
+            updated_rows = cursor.rowcount
+            print(updated_rows)
+                # Commit the changes to the database
+            connection.commit()
+        cursor.close()
+    os.remove(f'{a_nommer}/OldPoints_ok.csv')
 r.beep(sound = 1)
 ```
 
@@ -309,7 +312,7 @@ Puis mise à jour des Participations : \## Update participation
 ```{python}
 
 # Mettre ici le nom du csv a_coder_..._created.csv
-participations = pd.read_csv(f'{a_nommer}/a_coder20240219_151209_ok_created.csv', sep = ";")
+participations = pd.read_csv(f'{a_nommer}/a_coder20240306_135421_ok_created.csv', sep = ";")
 
 with contextlib.ExitStack() as ctx:
     connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
@@ -643,7 +646,7 @@ for subdir, dirs, files in os.walk(a_compresser):
     print(subdir)
     if subdir.split(os.sep)[-1] == 'WAV' and len(files)>0:
         placette = files[0].split('_')[1]
-        dateint = files[0].split('_')[4]
+        dateint = files[0].split('_')[-3]
         date = pd.to_datetime(dateint, format = '%Y%m%d').strftime('%Y-%m-%d')
         print(date)
 
