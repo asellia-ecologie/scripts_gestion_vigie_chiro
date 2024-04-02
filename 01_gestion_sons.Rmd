@@ -111,7 +111,6 @@ del subdir, dirs, files, file, nom, test_boitier, boite, jour, nv_nom, heure
 ```
 
 ### Renommage des SM2 sans prefixe
-
 ```{python}
 # print(a_prefixer)
 # numBoitier = 'SM2_' # à modifier selon le boitier à renommer
@@ -243,7 +242,7 @@ with contextlib.ExitStack() as ctx:
 
     for _, row in nuits_boitiers.iterrows():
         rang = dict(row)
-        ligne = get_ligne(cursor, rang['boitier'], rang['date'])
+        ligne = get_ligne(cursor, rang['boitier'], rang['date']) # la récup du type de boitier se fait dans fonctions_asellia.py/get_ligne
         print(ligne)
 
         with open(f'{a_nommer}/a_coder{now}.csv', 'a', newline= '') as file:
@@ -315,7 +314,7 @@ r.beep(sound = 1)
 ```{python}
 
 # Mettre ici le nom du csv a_coder_..._created.csv
-participations = pd.read_csv(f'{a_nommer}/a_coder20240401_195043_ok_created.csv', sep = ";")
+participations = pd.read_csv(f'{a_nommer}/a_coder20240402_102020_ok_created.csv', sep = ";")
 
 with contextlib.ExitStack() as ctx:
     connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
