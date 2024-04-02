@@ -12,7 +12,7 @@ Depends on :
     - create_participations.R
     - CreateTar_ErrorProof_parallel_sitesaisi.R
 
-Shield: [![CC BY 4.0][cc-by-sa-shield]][cc-by-sa]
+[![CC BY 4.0][cc-by-sa-shield]][cc-by-sa]
 
 This work is licensed under a
 [Creative Commons Attribution 4.0 International License][cc-by-sa].
