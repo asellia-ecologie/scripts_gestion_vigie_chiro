@@ -79,7 +79,7 @@ for (parti in participations) { # Pour chaque participation :
   participation$Type <- dplyr::if_else(participation$tadarida_taxon %in%
     especes$espece, "Chiro", NA)
   participation$Type <- dplyr::if_else(participation$tadarida_taxon ==
-    "noise" && is.na(participation$Type), "Noise", "Autre")
+    "noise" & is.na(participation$Type), "Noise", "Autre")
   # Création de la colonne 'Point'
   participation$Point <- str_split_i(participation$nom.du.fichier, "_", 2)
 

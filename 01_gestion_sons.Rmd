@@ -8,6 +8,7 @@ library(beepr)
 source("variables_perso.R")
 # Renseigner Python selon l’env anaconda choisi :
 use_python(python)
+use_condaenv("Gestion_Sons")
 setwd(dossier)
 ```
 
@@ -40,9 +41,7 @@ from fonctions_asellia import get_placette_count, get_ligne, updateVigie, update
 Préparation des dossiers :
 ```{python}
 # Le dossier de travail et celui ou se trouve le script python
-HOME = "/home/asellia_pc_chiro/Bureau/GESTION_SONS/05_VIEUX_SONS" # option vieux sons
-os.chdir(HOME)
-# os.chdir('/media/asellia_pc_chiro/T_01/02_SONS_A_TRAITER')
+os.chdir('/home/asellia_pc_chiro/Bureau/GESTION_SONS/01_SONS_A_TRAITER')
 
 # Modifier rootdir si a_classer, a_nommer, a_convertir et a_compresser ne sont
 # pas au même endroit que le script
@@ -88,6 +87,7 @@ del nom, test_boitier, boite, nv_nom, subdir, dirs, files, file
 # Même principe que la cellule précédente, les critères varient
 for subdir, dirs, files in os.walk(a_classer):
     for file in files:
+        print(file)
         if file.split('.')[-1] == 'wav':
             nom = file.split('.')[0]
             test_boitier = nom.split(' ')
@@ -97,6 +97,13 @@ for subdir, dirs, files in os.walk(a_classer):
                 boite = 'SW5'
                 jour = test_boitier[0].replace('-', '')
                 heure = test_boitier[1].replace('-', '')
+                nv_nom = boite + '_' + jour + '_' + heure + '.wav'
+                print(nv_nom)
+                os.rename(f"{subdir}/{file}", f"{subdir}/{nv_nom}")
+            elif len(test_boitier) > 1:
+                boite = test_boitier[0]
+                jour = test_boitier[1].replace('-', '')
+                heure = test_boitier[2].replace('-', '')
                 nv_nom = boite + '_' + jour + '_' + heure + '.wav'
                 print(nv_nom)
                 os.rename(f"{subdir}/{file}", f"{subdir}/{nv_nom}")
@@ -220,9 +227,7 @@ for _, row in nuits_boitiers.iterrows():
 
 ```
 
-
 ### Création du csv pour code vigie-chiro
-
 ```{python}
 now = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 print(now)
@@ -264,7 +269,6 @@ if exists_csv_ok:
 Ici exécuter le script find_points_orig.R Puis Participations.Rmd
 
 ### Mise a jour du point vigie chiro dans la bdd placettes
-
 ```{python}
 
 if os.path.exists(f'{a_nommer}/NewPoints_ok.csv'):
@@ -307,12 +311,11 @@ if os.path.exists(f'{a_nommer}/OldPoints_ok.csv'):
 r.beep(sound = 1)
 ```
 
-Puis mise à jour des Participations : \## Update participation
-
+### Puis mise à jour des Participations : \## Update participation
 ```{python}
 
 # Mettre ici le nom du csv a_coder_..._created.csv
-participations = pd.read_csv(f'{a_nommer}/a_coder20240219_151209_ok_created.csv', sep = ";")
+participations = pd.read_csv(f'{a_nommer}/a_coder20240401_195043_ok_created.csv', sep = ";")
 
 with contextlib.ExitStack() as ctx:
     connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
@@ -332,7 +335,6 @@ r.beep(sound = 1)
 ```
 
 ### Renommage (à adapter à la requête sql)
-
 ```{python}
 # On parcourt le dossier 'a_nommer'
 for subdir, dirs, files in os.walk(a_nommer):
@@ -436,7 +438,6 @@ r.beep(sound = 1)
 ```
 
 ### Découpage/expansion des fichiers (attention, demandeur en ressources, ne pas faire pour des dizaines de nuits)
-
 ```{python}
 nettoyageDossier(a_convertir)
 nettoyageDossier(a_convertir)
@@ -462,9 +463,7 @@ r.beep(sound = 1)
 ```
 
 ## Vérification
-
 Plus utile sauf en cas de doute sur tadam.py, mais a tjs fonctionné jusque-là.
-
 ```{python}
 
 # def get_placette(cursor, boitier, date):
@@ -548,7 +547,6 @@ Plus utile sauf en cas de doute sur tadam.py, mais a tjs fonctionné jusque-là.
 ```
 
 ### Rangement dans a_compresser
-
 ```{python}
 for subdir, dirs, files in os.walk(a_convertir):
     if subdir.split(os.sep)[-1] ==  'WAC':
