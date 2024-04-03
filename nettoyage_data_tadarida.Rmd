@@ -70,7 +70,7 @@ sons_asellia$observateur_taxon <- str_to_title( # met en Maj
 ```{r}
 # sons_asellia <- sons_asellia %>% select(-tag)
 # sons_asellia <- unique(sons_asellia)
-sons_asellia <- sons_asellia[!duplicated(
+sons_asellia <- sons_asellia[!duplicated(# méthode à tester
                              sons_asellia[!names(sons_asellia) %in% c("tag")]),]
 ```
 
