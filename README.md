@@ -12,7 +12,8 @@ Depends on :
     - create_participations.R
     - CreateTar_ErrorProof_parallel_sitesaisi.R
 
-[![CC BY 4.0][cc-by-sa-shield]][cc-by-sa]
+parse_json.R is usefull for QField Cloud users who might want to update their 
+Postgres database with unapplied data recovered from the Qfield Cloud team
 
 This work is licensed under a
 [Creative Commons Attribution 4.0 International License][cc-by-sa].
