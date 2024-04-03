@@ -134,7 +134,7 @@ def get_ligne(cursor, boitier, date):
         case
         when num_sm2 in ('SM1', 'SM2', 'SM3', 'SM4') then 18
         when num_sm2 like 'SM%%' then 20
-        when num_sm2 in ('SW5', '622741', '622782', '622801', '622816', '633084', '633090', '636629', '657392', '657396', '657404', '660610') then 2
+        when num_sm2 in ('SW5', '622741', '622782', '622801', '622816', '633084', '633090', '636629', '657392', '657396', '657404', '660610', '657418', '668998') then 2
         else 14
         end as Recorder,
         'NA' as Mic, 999 as GainRecorder, 0 as HPF, 2 as FreqMin,
@@ -179,7 +179,7 @@ def get_ligne_placette(cursor, placette, date):
         case
         when num_sm2 in ('SM1', 'SM2', 'SM3', 'SM4') then 18
         when num_sm2 like 'SM%%' then 20
-        when num_sm2 in ('SW5', '622741', '622782', '622801', '622816', '633084', '633090', '636629', '657392', '657396', '657404', '660610') then 2
+        when num_sm2 in ('SW5', '622741', '622782', '622801', '622816', '633084', '633090', '636629', '657392', '657396', '657404', '660610', '657418', '668998') then 2
         else 14
         end as Recorder,
         'NA' as Mic, 999 as GainRecorder, 0 as HPF, 2 as FreqMin,
