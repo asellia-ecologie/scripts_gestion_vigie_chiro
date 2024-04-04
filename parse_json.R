@@ -47,8 +47,6 @@ update_pg_from_json <- function(json, schema, table) {
   )
 
   for (i in 1:length(json$deltas)) {
-    # print(tvb$deltas[[i]]$sourceLayerId)
-    # stations <- append(stations, json$deltas[[i]]$Pk)
     split <- strsplit(json$deltas[[i]]$sourceLayerId, "_")
     longueur <- length(unlist(split))
     longueur <- longueur - 5
