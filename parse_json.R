@@ -1,12 +1,12 @@
 library(jsonlite)
 library(RPostgreSQL)
 
-# Renseigner l’emplacement du json à ouvrir :
+# Location of your delta.json :
 tvb <- read_json("/home/bbk9/Documents/asellia/donnees_carafe/TVB_CCSP_deltas_d335d013-ac3a-41e9-97c5-7303351a5003.json")
 
-# Si cred.R se trouve à côté du script, il n’y a normalement rien à modifier :
-# il contient les variables (dbname, host, port, user, password de connexion à
-# la bdd)
+# We put our connection variables (dbname, host, port, user, password) in a
+# cred.R file next to our script, adapt to your liking
+
 cred_bdd <- "cred.R"
 
 source(file.path(cred))
@@ -28,10 +28,30 @@ tryCatch(
   }
 )
 
+# Function update_pg_from_json
+# --------
+# parses qfield cloud delta json and updates postgresql related table
+# multiple table data are stored in the json file, the parameters permits
+#  to choose which one we want to update
+#  no information is present in the qfield record as to the time the data was
+# produced, if multiple modifications occur on the same table, only the last
+# will be visible. It is up to you to clean the json file before using the
+# function
+#  
+# Parameters
+# --------
+# json :
+#  jsonlite open object
+# schema :
+#  name of postgresql schema you want to update to
+# table :
+#   name of postgresql table you want to update to
 
-# json is the file as opened with jsonlite
-# schema and table are the schema and table you want to update in your pg
-# database
+# Returns
+#  --------
+#  nothing :
+#  updates PG database
+#
 update_pg_from_json <- function(json, schema, table) {
   sql_pk <- paste0(
     "SELECT c.column_name
@@ -70,6 +90,8 @@ update_pg_from_json <- function(json, schema, table) {
       if (exists("json$deltas[[i]]$new$geometry")) {
         dictionnaire <- append(
           dictionnaire,
+          # our geom column is point, not pointz, remove st_force2d() if you
+          # want to record pointz geometries
           paste0("geom = st_force2d('", json$deltas[[i]]$new$geometry, "')")
         )
       }
