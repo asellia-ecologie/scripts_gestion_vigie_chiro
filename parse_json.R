@@ -5,6 +5,8 @@ library(RPostgreSQL)
 tvb <- read_json("/home/bbk9/Documents/asellia/donnees_carafe/TVB_CCSP_deltas_d335d013-ac3a-41e9-97c5-7303351a5003.json")
 
 # Si cred.R se trouve à côté du script, il n’y a normalement rien à modifier :
+# il contient les variables (dbname, host, port, user, password de connexion à
+# la bdd)
 cred_bdd <- "cred.R"
 
 source(file.path(cred))
