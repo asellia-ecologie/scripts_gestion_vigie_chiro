@@ -54,11 +54,11 @@ for (parti in participations) { # Pour chaque participation :
   participation$Date_Heure <- ymd_hms(
     paste(
       str_split_i(
-        participation$nom.du.fichier,
+        participation$nom_du_fichier,
         "_", -3
       ),
       str_split_i(
-        participation$nom.du.fichier,
+        participation$nom_du_fichier,
         "_", -2
       )
     )
@@ -78,15 +78,15 @@ for (parti in participations) { # Pour chaque participation :
   # Distinction des chiros/autres dans type
   participation$Type <- dplyr::if_else(participation$tadarida_taxon %in%
     especes$espece, "Chiro", NA)
-  participation$Type <- dplyr::if_else(participation$tadarida_taxon ==
-    "noise" & is.na(participation$Type), "Noise", "Autre")
+#  participation$Type <- dplyr::if_else(participation$tadarida_taxon ==
+#   "noise" & is.na(participation$Type), "Noise", "Autre")
   # Création de la colonne 'Point'
-  participation$Point <- str_split_i(participation$nom.du.fichier, "_", 2)
+  participation$Point <- str_split_i(participation$nom_du_fichier, "_", 2)
 
   # Création de la colonne 'Site'
-  participation$Site <- str_split_i(participation$nom.du.fichier, "_", 3)
+  participation$Site <- str_split_i(participation$nom_du_fichier, "_", 3)
   # detecteur
-  participation$Detecteur <- str_split_i(participation$nom.du.fichier, "_", -4)
+  participation$Detecteur <- str_split_i(participation$nom_du_fichier, "_", -4)
   # Récupération des valeurs uniques de boitier, point et date_nuit
   boitier <- unique(participation$Boitier)
   point <- unique(participation$Point)
@@ -109,7 +109,7 @@ for (parti in participations) { # Pour chaque participation :
   # on en fait un tableau
   participation <- as_tibble(participation)
   # renommage de colonne
-  participation$nom_du_fichier <- participation$nom.du.fichier
+  participation$nom_du_fichier <- participation$nom_du_fichier
   participation$identificateur <- NA
   # ordre des colonnes qui nous convient
   ordre_colonnes <- c(
