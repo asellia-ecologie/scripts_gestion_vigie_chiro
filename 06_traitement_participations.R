@@ -120,6 +120,7 @@ for (parti in participations) { # Pour chaque participation :
     "validateur_taxon", "validateur_probabilite", "Point",
     "Site", "Detecteur", "Date_Heure"
   )
+  
   participation <- participation[, ordre_colonnes]
   class(participation)
   # Note pour lire les xlsx c’est pas le numero de feuille qui compte mais son
