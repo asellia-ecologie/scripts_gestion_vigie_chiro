@@ -262,17 +262,15 @@ for _, row in nuits_boitiers.iterrows():
 for erreur in erreurs:
     print(erreur)
     
-if len(erreur) >=1:
+if len(erreurs) >=1:
     os.remove(f"{a_nommer}/a_coder{now}.csv")
-
-
-csv_orig = pd.read_csv(f"{a_nommer}/a_coder{now}.csv")
-csv2 = csv_orig.drop_duplicates()
-csv2.to_csv(f"{a_nommer}/a_coder{now}_ok.csv", sep=';')
-exists_csv_ok = os.path.exists(f"{a_nommer}/a_coder{now}_ok.csv")
-
-if exists_csv_ok:
-    os.remove(f"{a_nommer}/a_coder{now}.csv")
+else :
+    csv_orig = pd.read_csv(f"{a_nommer}/a_coder{now}.csv")
+    csv2 = csv_orig.drop_duplicates()
+    csv2.to_csv(f"{a_nommer}/a_coder{now}_ok.csv", sep=';')
+    exists_csv_ok = os.path.exists(f"{a_nommer}/a_coder{now}_ok.csv")
+    if exists_csv_ok:
+        os.remove(f"{a_nommer}/a_coder{now}.csv")
 ```
 
 Ici exécuter le script find_points_orig.R Puis Participations.Rmd
