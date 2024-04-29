@@ -234,16 +234,19 @@ with open(f'{a_nommer}/a_coder{now}.csv', 'w', newline= '') as file:
     writer = csv.writer(file)
     fields =  ["FirstName","FamilyName","Email","Affiliation","Country","Site","X","Y","Participation","StartDate","EndDate", "TypeStudy", "MicHeight", "Recorder", "Mic", "GainRecorder", "HPF", "FreqMin", "FreqMax", "TriggerLevel", "MinDur", "MaxDur", "TrigWin", "Pause", "TrigWinMax", "FileSplittingLength", "NoiseFilter", "Comment"]
     writer.writerow(fields)
-
+erreurs = []
 # Mise à jour du tableau avec le nombre de nuits par boitier (1 si ok):
 with contextlib.ExitStack() as ctx:
     connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
     cursor = ctx.enter_context(connection.cursor())
 
+
     for _, row in nuits_boitiers.iterrows():
         rang = dict(row)
         ligne = get_ligne(cursor, rang['boitier'], rang['date']) # la récup du type de boitier se fait dans fonctions_asellia.py/get_ligne
         print(ligne)
+        if ligne[5] == None:
+            erreurs.append(f'Il y a un problème avec le boitier {row["boitier"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}, le nom_point n’est pas attribué. Corrigez ça dans la base de données et relancez la cellule.')
 
         with open(f'{a_nommer}/a_coder{now}.csv', 'a', newline= '') as file:
             writer = csv.writer(file)
@@ -255,7 +258,9 @@ with contextlib.ExitStack() as ctx:
 for _, row in nuits_boitiers.iterrows():
     if row['nb_placettes'] != 1:
         print(f'Il y a un problème avec le boitier {row["boitier"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}')
-
+    
+for erreur in erreurs:
+    print(erreur)
 csv_orig = pd.read_csv(f"{a_nommer}/a_coder{now}.csv")
 csv2 = csv_orig.drop_duplicates()
 csv2.to_csv(f"{a_nommer}/a_coder{now}_ok.csv", sep=';')
@@ -314,7 +319,7 @@ r.beep(sound = 1)
 ```{python}
 
 # Mettre ici le nom du csv a_coder_..._created.csv
-participations = pd.read_csv(f'{a_nommer}/a_coder20240417_180626_ok_created.csv', sep = ";")
+participations = pd.read_csv(f'{a_nommer}/a_coder20240429_103840_ok_created.csv', sep = ";")
 
 with contextlib.ExitStack() as ctx:
     connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
