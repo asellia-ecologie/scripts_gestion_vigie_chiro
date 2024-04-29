@@ -261,6 +261,11 @@ for _, row in nuits_boitiers.iterrows():
     
 for erreur in erreurs:
     print(erreur)
+    
+if len(erreur) >=1:
+    os.remove(f"{a_nommer}/a_coder{now}.csv")
+
+
 csv_orig = pd.read_csv(f"{a_nommer}/a_coder{now}.csv")
 csv2 = csv_orig.drop_duplicates()
 csv2.to_csv(f"{a_nommer}/a_coder{now}_ok.csv", sep=';')
