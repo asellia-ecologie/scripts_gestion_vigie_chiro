@@ -245,6 +245,7 @@ with contextlib.ExitStack() as ctx:
         rang = dict(row)
         ligne = get_ligne(cursor, rang['boitier'], rang['date']) # la récup du type de boitier se fait dans fonctions_asellia.py/get_ligne
         print(ligne)
+        # ligne[5] correspond à 'Site' dans le csv, nom_point dans notre bdd_placettes
         if ligne[5] == None:
             erreurs.append(f'Il y a un problème avec le boitier {row["boitier"]} pour la nuit du {pd.to_datetime(row["date"], format = "%Y-%m-%d").strftime("%d-%m-%Y")}, le nom_point n’est pas attribué. Corrigez ça dans la base de données et relancez la cellule.')
 
