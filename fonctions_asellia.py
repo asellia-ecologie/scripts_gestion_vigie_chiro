@@ -178,6 +178,7 @@ def get_ligne_placette(cursor, placette, date):
         EndDate, 1 as TypeStudy, hauteur_micro as MicHeight,
         case
         when num_sm2 in ('SM1', 'SM2', 'SM3', 'SM4') then 18
+	when num_sm2 in ('SM27', 'SM28', 'SM29', 'SM30','SM31', 'SM32', 'SM33', 'SM34') then 21
         when num_sm2 like 'SM%%' then 20
         when num_sm2 in ('SW5', '622741', '622782', '622801', '622816', '633084', '633090', '636629', '657392', '657396', '657404', '660610', '657418', '668998') then 2
         else 14

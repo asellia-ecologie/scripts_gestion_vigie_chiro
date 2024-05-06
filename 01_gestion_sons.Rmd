@@ -323,7 +323,7 @@ r.beep(sound = 1)
 ```{python}
 
 # Mettre ici le nom du csv a_coder_..._created.csv
-participations = pd.read_csv(f'{a_nommer}/a_coder20240429_103840_ok_created.csv', sep = ";")
+participations = pd.read_csv(f'{a_nommer}/a_coder20240430_182221_ok_created.csv', sep = ";")
 
 with contextlib.ExitStack() as ctx:
     connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
