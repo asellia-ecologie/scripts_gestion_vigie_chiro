@@ -5,11 +5,12 @@
 # Pour utiliser Python :
 library(reticulate)
 library(beepr)
+setwd("/home/asellia_pc_chiro/Bureau/GESTION_SONS/00_SCRIPTS/scripts_gestion_vigie_chiro")
 source("variables_perso.R")
 # Renseigner Python selon l’env anaconda choisi :
 use_python(python)
 use_condaenv("Gestion_Sons")
-setwd(dossier)
+
 ```
 
 ## Appel des bibliothèques nécessaires
@@ -165,6 +166,9 @@ for subdir, dirs, files in os.walk(a_classer):
                     os.rename(f"{subdir}/{file}", f"{path_boitier}/{date}/WAV/{file}")
                 else:
                     os.rename(f"{subdir}/{file}", f"{path_boitier}/{date}/WAC/{file}")
+
+nettoyageDossier(a_classer)
+nettoyageDossier(a_classer)
 r.beep(sound = 1)
 ```
 
@@ -274,7 +278,7 @@ else :
         os.remove(f"{a_nommer}/a_coder{now}.csv")
 ```
 
-Ici exécuter le script find_points_orig.R Puis Participations.Rmd
+Ici exécuter le script find_points_sf.R Puis Participations.Rmd
 
 ### Mise a jour du point vigie chiro dans la bdd placettes
 ```{python}
@@ -323,8 +327,7 @@ r.beep(sound = 1)
 ```{python}
 
 # Mettre ici le nom du csv a_coder_..._created.csv
-participations = pd.read_csv(f'{a_nommer}/a_coder20240430_182221_ok_created.csv', sep = ";")
-
+participations = pd.read_csv(f'{a_nommer}/a_coder20240528_130223_ok_created.csv', sep = ";")
 with contextlib.ExitStack() as ctx:
     connection = ctx.enter_context(pg.connect(f"host={HOST} dbname={DB_NAME} user={USER} password={PASSWORD} port={PORT}"))
     cursor = ctx.enter_context(connection.cursor())
@@ -680,7 +683,7 @@ for subdir, dirs, files in os.walk(a_compresser):
 
 
                 for file in files:
-                    print(f"{subdir}/{file} > {a_envoyer}/tar/{siteParti[0]}/{siteParti[1]}/{file}")
+                    # print(f"{subdir}/{file} > {a_envoyer}/tar/{siteParti[0]}/{siteParti[1]}/{file}")
                     # os.system(f"cp {subdir}/{file} {a_envoyer}/tar/{siteParti[0]}/{siteParti[1]}/{file}")
                     su.copy(f"{subdir}/{file}", f"{a_envoyer}/tar/{siteParti[0]}/{siteParti[1]}/{file}")
             else:
