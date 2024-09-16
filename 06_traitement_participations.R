@@ -46,7 +46,7 @@ for (parti in participations) { # Pour chaque participation :
   participation <-
     read.csv(fichier, sep = ";") # on ouvre le fichier
   especes <- read.csv("ref_vigie.csv", sep = ";") # et la liste des esp.
-  # especes_ortho <- read.csv("ref_vigie_ortho.csv", sep = ";") # liste des esp. à
+  #especes_ortho <- read.csv("ref_vigie_ortho.csv", sep = ";") # liste des esp. à
   # intégrer
 
   format(date(participation$Date_Heure), format = "%d/%m/%Y")
@@ -122,6 +122,9 @@ for (parti in participations) { # Pour chaque participation :
   )
   
   participation <- participation[, ordre_colonnes]
+  participation$wav <- ".wav"
+  participation$nom_du_fichier <- paste0(participation$nom_du_fichier, participation$wav)
+  participation$wav <- NULL
   class(participation)
   # Note pour lire les xlsx c’est pas le numero de feuille qui compte mais son
   # ordre dans les onglets
@@ -149,3 +152,5 @@ for (parti in participations) { # Pour chaque participation :
     ))
   }
 }
+
+

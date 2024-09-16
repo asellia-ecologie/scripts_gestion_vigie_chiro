@@ -92,7 +92,7 @@ update_pg_from_json <- function(json, schema, table) {
           dictionnaire,
           # our geom column is point, not pointz, remove st_force2d() if you
           # want to record pointz geometries
-          paste0("geom = st_force2d('", json$deltas[[i]]$new$geometry, "')")
+          paste0("geom = st_force3d('", json$deltas[[i]]$new$geometry, "')")
         )
       }
 
@@ -107,5 +107,5 @@ update_pg_from_json <- function(json, schema, table) {
   }
 }
 
-
+## modifier ici le schema et la table a update 
 update_from_json(tvb, "bd_biodiv", "stations_ccsp")
